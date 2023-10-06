@@ -4,5 +4,5 @@
 -o games/game.t3
 -lib system
 -lib adv3/adv3
--lib ../rulesEngine
+-lib ../ruleEngine
 -source src/sample.t

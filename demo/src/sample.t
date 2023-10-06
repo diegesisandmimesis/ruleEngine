@@ -4,7 +4,7 @@
 // Version 1.0
 // Copyright 2022 Diegesis & Mimesis
 //
-// This is a very simple demonstration "game" for the rulesEngine library.
+// This is a very simple demonstration "game" for the ruleEngine library.
 //
 // It can be compiled via the included makefile with
 //
@@ -19,17 +19,17 @@
 #include <adv3.h>
 #include <en_us.h>
 
-#include "rulesEngine.h"
+#include "ruleEngine.h"
 
 versionInfo: GameID
-        name = 'rulesEngine Library Demo Game'
+        name = 'ruleEngine Library Demo Game'
         byline = 'Diegesis & Mimesis'
-        desc = 'Demo game for the rulesEngine library. '
+        desc = 'Demo game for the ruleEngine library. '
         version = '1.0'
         IFID = '12345'
 	showAbout() {
 		"This is a simple test game that demonstrates the features
-		of the rulesEngine library.
+		of the ruleEngine library.
 		<.p>
 		Consult the README.txt document distributed with the library
 		source for a quick summary of how to use the library in your

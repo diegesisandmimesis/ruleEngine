@@ -1,14 +1,14 @@
 #charset "us-ascii"
 //
-// rulebook.t
+// ruleEngineRulebook.t
 //
 #include <adv3.h>
 #include <en_us.h>
 
-#include "scene.h"
+#include "ruleEngine.h"
 
-class Rulebook: Syslog
-	syslogID = 'Rulebook'
+class RuleEngineRulebook: Syslog
+	syslogID = 'RuleEngineRulebook'
 
 	active = nil
 
@@ -25,7 +25,7 @@ class Rulebook: Syslog
 	isAvailable() { return(!isActive()); }
 
 	addRule(obj) {
-		if((obj == nil) || !obj.ofKind(Rule))
+		if((obj == nil) || !obj.ofKind(RuleEngineRuleBase))
 			return(nil);
 
 		if(ruleList == nil)

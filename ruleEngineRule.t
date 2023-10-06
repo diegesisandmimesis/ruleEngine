@@ -1,6 +1,6 @@
 #charset "us-ascii"
 //
-// rule.t
+// ruleEngineRule.t
 //
 //	A rule for our purposes is a single check against the game state.
 //
@@ -38,10 +38,10 @@
 #include <adv3.h>
 #include <en_us.h>
 
-#include "rulesEngine.h"
+#include "ruleEngine.h"
 
 // Generic rule class.
-class RuleBase: Syslog
+class RuleEngineRuleBase: Syslog
 	syslogID = 'Rule'
 
 	// Is the rule active?  That is, should it be checked this turn?
@@ -63,7 +63,7 @@ class RuleBase: Syslog
 
 	// Figure out which rulebook we belong to.
 	_initializeRuleLocation() {
-		if((location == nil) || !location.ofKind(Rulebook))
+		if((location == nil) || !location.ofKind(RuleEngineRulebook))
 			return;
 
 		// Add ourselves to our parent's rule list.
@@ -114,7 +114,7 @@ class RuleBase: Syslog
 ;
 
 // Rule class containing utility methods for triggers.
-class Rule: RuleBase
+class RuleEngineRule: RuleEngineRuleBase
 	// A list of sense actions.
 	_senseActions = static [ ExamineAction, LookAction, SmellAction,
 		ListenToAction, TasteAction, FeelAction, SenseImplicitAction ]
