@@ -19,6 +19,8 @@ class Rulebook: Syslog
 
 	timestamp = nil
 
+	owner = nil
+
 	_checkCache = nil
 
 	isActive() { return(active == true); }
@@ -75,6 +77,9 @@ class Rulebook: Syslog
 
 		return(true);
 	}
+
+	// By default, do nothing.
+	callback() {}
 
 	initializeRulebook() {
 		if((location == nil) || !location.ofKind(RuleUser))

@@ -10,10 +10,12 @@
 class RuleUser: Syslog
 	rulebook = perInstance(new LookupTable())
 
+	rulebookClass = Rulebook
+
 	_rulebookIdx = 0
 
 	addRulebook(obj) {
-		if(obj && !obj.ofKind(Rulebook))
+		if(obj && !obj.ofKind(rulebookClass))
 			return(nil);
 
 		if(obj.id == nil)
@@ -28,13 +30,10 @@ class RuleUser: Syslog
 		return(rulebook[(id ? id : 'default')]);
 	}
 
-	initRulebook(id?) {
+	newRulebook(id?) {
 		local r;
 
-		if(rulebook != nil)
-			return(nil);
-
-		r = new Rulebook();
+		r = rulebookClass.createInstance();
 		r.id = (id ? id : 'default');
 		r.owner = self;
 
@@ -50,8 +49,31 @@ class RuleUser: Syslog
 			return(nil);
 
 		if((r = getRulebook()) == nil)
-			r = initRulebook();
+			r = newRulebook();
 
 		return(r.addRule(obj));
+	}
+
+	haveRules() { return(rulebook.keysToList().length > 0); }
+
+	checkRulebooks() {
+		local i, l;
+
+		l = rulebook.keysToList();
+		for(i = 1; i <= l.length(); i++) {
+			if(rulebook[l[i]].check() != true)
+				return(nil);
+		}
+
+		return(true);
+	}
+
+	checkRulebook(id?) {
+		local r;
+
+		if((r = getRulebook(id)) == nil)
+			return(nil);
+
+		return(r.check());
 	}
 ;

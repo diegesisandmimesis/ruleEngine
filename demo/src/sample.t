@@ -42,8 +42,14 @@ versionInfo: GameID
 gameMain: GameMainDef
 	initialPlayerChar = me
 	newGame() {
-		syslog.enable('ruleEngineMatches');
+		//syslog.enable('ruleEngineMatches');
+		showIntro();
 		runGame(true);
+	}
+	showIntro() {
+		"The rulebook should match on the third turn, displaying
+		a message.
+		<.p> ";
 	}
 ;
 
@@ -62,7 +68,11 @@ startRoom: Room 'Void'
 ;
 +me: Person;
 
-Rulebook 'myRulebook';
+myController: RuleEngineController;
+
+Rulebook 'myRulebook'
+	callback() { "<.p>All the rules in the rulebook matched.<.p> "; }
+;
 +Rule 'myRule'
 	matchRule(actor?, obj?, action?) {
 		return(libGlobal.totalTurns == 2);

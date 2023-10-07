@@ -7,7 +7,7 @@
 
 #include "ruleEngine.h"
 
-ruleEngineController: RuleEngineObject, BeforeAfterThing, PreinitObject
+class RuleEngineController: RuleEngineObject, BeforeAfterThing, PreinitObject
 	syslogID = 'ruleEngineController'
 	syslogFlag = 'ruleEngineController'
 
@@ -17,7 +17,6 @@ ruleEngineController: RuleEngineObject, BeforeAfterThing, PreinitObject
 	_ruleDaemon = nil
 
 	_ruleMatches = nil
-	_rulebookMatches = nil
 
 	execute() {
 		initRules();
@@ -43,7 +42,7 @@ ruleEngineController: RuleEngineObject, BeforeAfterThing, PreinitObject
 	}
 
 	initRuleEngineDaemon() {
-		_ruleDaemon = new Daemon(self, &updateRules, 1);
+		_ruleDaemon = new Daemon(self, &updateRuleEngine, 1);
 	}
 
 	addRulebook(obj) {
@@ -84,22 +83,21 @@ ruleEngineController: RuleEngineObject, BeforeAfterThing, PreinitObject
 		_syslog('===globalAfterAction() END===');
 	}
 
-	updateRulebooks() {
-		_syslog('===updateRulebooks() START===');
+	updateRuleEngine() {
+		_syslog('===updateRuleEngine() START===');
 
 		_turnCleanup();
 
-		_syslog('===updateRulebooks() END===');
+		_syslog('===updateRuleEngine() END===');
 	}
 
 	_turnSetup() {
 		_setRuleMatches();
-		_setRulebookMatches();
+		_updateRulebooks();
 	}
 
 	_turnCleanup() {
 		_clearRuleMatches();
-		_clearRulebookMatches();
 	}
 
 	_setRuleMatches() {
@@ -119,19 +117,10 @@ ruleEngineController: RuleEngineObject, BeforeAfterThing, PreinitObject
 		_ruleMatches = nil;
 	}
 
-	_setRulebookMatches() {
-		_rulebookMatches = new Vector(_rulebookList.length);
+	_updateRulebooks() {
 		_rulebookList.forEach(function(o) {
 			if(o.check() == true)
-				_rulebookMatches.append(o);
+				o.callback();
 		});
-		_debug('rulebook matches, turn
-			<<toString(libGlobal.totalTurns)>>:
-			<<toString(_rulebookMatches.length)>>',
-			'ruleEngineMatches');
-	}
-
-	_clearRulebookMatches() {
-		_rulebookMatches = nil;
 	}
 ;
