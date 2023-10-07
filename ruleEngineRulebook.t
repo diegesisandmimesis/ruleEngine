@@ -7,8 +7,10 @@
 
 #include "ruleEngine.h"
 
-class RuleEngineRulebook: Syslog
-	syslogID = 'RuleEngineRulebook'
+class Rulebook: Syslog
+	syslogID = 'Rulebook'
+
+	id = nil
 
 	active = nil
 
@@ -25,7 +27,7 @@ class RuleEngineRulebook: Syslog
 	isAvailable() { return(!isActive()); }
 
 	addRule(obj) {
-		if((obj == nil) || !obj.ofKind(RuleEngineRuleBase))
+		if((obj == nil) || !obj.ofKind(Rule))
 			return(nil);
 
 		if(ruleList == nil)
@@ -72,5 +74,14 @@ class RuleEngineRulebook: Syslog
 				return(nil);
 
 		return(true);
+	}
+
+	initializeRulebook() {
+		if((location == nil) || !location.ofKind(RuleUser))
+			return;
+
+		location.addRulebook(self);
+
+		owner = location;
 	}
 ;

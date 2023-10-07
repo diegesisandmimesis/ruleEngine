@@ -39,8 +39,32 @@ versionInfo: GameID
 		intended to make it as readable as possible. ";
 	}
 ;
+gameMain: GameMainDef
+	initialPlayerChar = me
+	newGame() {
+		syslog.enable('ruleEngineMatches');
+		runGame(true);
+	}
+;
 
-startRoom: Room 'Void' "This is a featureless void.";
+startRoom: Room 'Void'
+	"This is a featureless void with a sign on what passes for a wall. "
+;
++sign: Fixture 'sign' 'sign'
+	"Reading this sign (but not examining/looking at it) matches
+	the rule. "
+	dobjFor(Read) {
+		action() {
+			"The sign says: <q>[This space intentionally
+			left blank]</q>. ";
+		}
+	}
+;
 +me: Person;
 
-gameMain: GameMainDef initialPlayerChar = me;
+Rulebook 'myRulebook';
++Rule 'myRule'
+	matchRule(actor?, obj?, action?) {
+		return(libGlobal.totalTurns == 2);
+	}
+;

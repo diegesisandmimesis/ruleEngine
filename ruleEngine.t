@@ -12,3 +12,8 @@ ruleEngineModuleID: ModuleID {
         version = '1.0'
         listingOrder = 99
 }
+
+class RuleEngineObject: Syslog
+	syslogID = 'RuleEngineObject'
+	syslogFlag = 'ruleEngine'
+;
