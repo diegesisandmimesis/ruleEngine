@@ -68,7 +68,7 @@ startRoom: Room 'Void'
 ;
 +me: Person;
 
-myController: RuleEngineController;
+myController: RuleEngine;
 
 Rulebook 'myRulebook'
 	callback() { "<.p>All the rules in the rulebook matched.<.p> "; }

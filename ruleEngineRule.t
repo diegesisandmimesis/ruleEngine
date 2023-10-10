@@ -63,9 +63,10 @@ class Rule: Syslog
 
 	// Figure out which rulebook we belong to.
 	_initializeRuleLocation() {
-		if((location == nil) ||
-			(!location.ofKind(Rulebook)
-			&& !location.ofKind(RuleUser)))
+		if(location == nil)
+			return;
+
+		if(!location.ofKind(Rulebook) && !location.ofKind(RuleUser))
 			return;
 
 		// Add ourselves to our parent's rule list.
@@ -116,4 +117,3 @@ class Rule: Syslog
 		return(getState());
 	}
 ;
-
