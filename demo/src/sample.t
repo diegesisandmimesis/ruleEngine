@@ -47,34 +47,29 @@ gameMain: GameMainDef
 		runGame(true);
 	}
 	showIntro() {
-		"The rulebook should match on the third turn, displaying
-		a message.
+		"The rulebook should match on turn two, displaying
+		a message.  Remember that the <q>first</q> turn is
+		actually the zeroth, so the output for turn two is
+		what's diplayed after the third command.
 		<.p> ";
 	}
 ;
 
-startRoom: Room 'Void'
-	"This is a featureless void with a sign on what passes for a wall. "
-;
-+sign: Fixture 'sign' 'sign'
-	"Reading this sign (but not examining/looking at it) matches
-	the rule. "
-	dobjFor(Read) {
-		action() {
-			"The sign says: <q>[This space intentionally
-			left blank]</q>. ";
-		}
-	}
-;
+startRoom: Room 'Void' "This is a featureless void. ";
 +me: Person;
 
+// Declare a RuleEngine instance.
 myController: RuleEngine;
 
+// Declare a rulebook.
+// Normally we're place rulebooks "inside" some other object via the +Rulebook
+// syntax, but here we're just testing the bare minimum rulebook functionality,
+// so can get away with using an anonymous Rulebook instance.
 Rulebook 'myRulebook'
-	callback() { "<.p>All the rules in the rulebook matched.<.p> "; }
-;
-+Rule 'myRule'
-	matchRule(actor?, obj?, action?) {
-		return(libGlobal.totalTurns == 2);
+	callback() {
+		"<.p>All the rules in the rulebook matched on turn
+		<<toString(libGlobal.totalTurns)>>.<.p> ";
 	}
 ;
+// One rule, is boolean true only on turn two.
++Rule 'myRule' matchRule(data?) { return(libGlobal.totalTurns == 2); };

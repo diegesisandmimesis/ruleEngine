@@ -12,7 +12,7 @@ class Rulebook: Syslog
 
 	id = nil
 
-	active = nil
+	active = true
 
 	ruleList = nil
 	_ruleListDirty = nil
@@ -78,8 +78,12 @@ class Rulebook: Syslog
 		return(true);
 	}
 
-	// By default, do nothing.
-	callback() {}
+	// By default, do notify our owner
+	callback() {
+		if(owner == nil)
+			return;
+		owner.rulebookCallback(self.id);
+	}
 
 	initializeRulebook() {
 		if((location == nil) || !location.ofKind(RuleUser))

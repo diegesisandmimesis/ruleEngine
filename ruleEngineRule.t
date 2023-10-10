@@ -81,7 +81,7 @@ class Rule: Syslog
 
 	// Check whatever condition we test for.  The stub method never
 	// matches.
-	matchRule(actor?, obj?, action?) { return(nil); }
+	matchRule(data?) { return(nil); }
 
 	// Update our state.
 	setState(v?) {
@@ -110,10 +110,7 @@ class Rule: Syslog
 		// Check the timestamp, and re-check our condition(s)
 		// if they haven't been checked this turn.
 		if(timestamp != libGlobal.totalTurns)
-			setState(matchRule((actor ? actor : gActor),
-				(obj ? obj : gDobj),
-				(action ? action : gAction)));
-
+			setState(matchRule());
 		return(getState());
 	}
 ;
