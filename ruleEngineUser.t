@@ -79,7 +79,7 @@ class RuleUser: Syslog
 
 	// Returns boolean true if all the rulebooks are matched this
 	// turn.
-	checkRulebooks() {
+	matchAllRulebooks() {
 		local i, l;
 
 		l = rulebook.keysToList();
@@ -103,31 +103,29 @@ class RuleUser: Syslog
 		return(r.isActive() && r.check());
 	}
 
-	// Method called by rulebooks when all their rules are matched.
-	// Arg is the rulebook that matched.
-	// By default we note that the rulebook matched this turn and
-	// then check to see if all rulebooks have matched.
-	rulebookCallback(id) {
+	// Remember that the rulebook with the given ID matched this turn.
+	rulebookMatched(id) {
 		// Make sure we have an ID.
 		if(id == nil)
 			return;
 
-		_debug('callback for rulebook <<toString(id)>>');
+		_debug('rulebook <q><<toString(id)>></q> matched');
 
 		// Note that the rulebook who called us matched this
 		// turn.
 		rulebookMatches[id] = libGlobal.totalTurns;
+	}
+
+	// Called by Rulebook.callback() by default when the rulebook
+	// matches.
+	rulebookMatchCallback(id) {
+		// Mark the rulebook as matched.
+		rulebookMatched(id);
 
 		// Now check to see if all our rulebooks matched, and
 		// if so call the rulebook action.
 		if(checkRulebookMatches() == true)
 			rulebookMatchAction();
-	}
-
-	// Returns boolean true if the given rulebook matched this turn.
-	checkRulebookMatch(id?) {
-		return(rulebookMatches[(id ? id : 'default')]
-			== libGlobal.totalTurns);
 	}
 
 	// Returns boolean true if all active rulebooks matched this
@@ -143,6 +141,12 @@ class RuleUser: Syslog
 		}
 
 		return(true);
+	}
+
+	// Returns boolean true if the given rulebook matched this turn.
+	checkRulebookMatch(id?) {
+		return(rulebookMatches[(id ? id : 'default')]
+			== libGlobal.totalTurns);
 	}
 
 	// By default, do nothing.

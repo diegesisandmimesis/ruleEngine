@@ -7,84 +7,130 @@
 
 #include "ruleEngine.h"
 
+// Rulebook Base class.
+// By default, a rulebook's check() method will return true if all of
+// the rules in the rulebook are matched (that is, their individual
+// check() methods will all return true).
 class Rulebook: Syslog
 	syslogID = 'Rulebook'
 
+	// Unique ID for this rulebook
 	id = nil
 
+	// By default, rulebooks start active.
 	active = true
 
-	ruleList = nil
-	_ruleListDirty = nil
+	// Default value of the rulebook.  By default Rulebook.check()
+	// will return nil unless all of its rules match.  Setting
+	// default to true will reverse this.
+	defaultState = nil
 
+	// Computed state.  This is the cached value of Rulebook.check().
+	state = nil
+
+	// Turn number of last time the state was computed.
 	timestamp = nil
 
+	// Property to hold our rules.
+	ruleList = nil
+
+	// Flag to indicate rule list has been updated.
+	_ruleListDirty = nil
+
+	// RuleUser that owns this rulebook, if any.
 	owner = nil
 
-	_checkCache = nil
-
+	// Getter and setter for the active property.
 	isActive() { return(active == true); }
 	setActive(v) { active = ((v == true) ? true : nil); }
 
-	isAvailable() { return(!isActive()); }
+	// Getter and setter for the state.
+	getState() { return(state == true); }
+	setState(v?) { state = ((v == true) ? true : nil); }
 
+	// Adds a rule.
 	addRule(obj) {
+		// Make sure the arg is a rule.
 		if((obj == nil) || !obj.ofKind(Rule))
 			return(nil);
 
+		// Create a new vector for our rules if we don't have one.
 		if(ruleList == nil)
 			ruleList = new Vector();
 
+		// Avoid adding a duplicate rule.
 		if(ruleList.indexOf(obj) != nil)
 			return(nil);
 
+		// Actually add the rule.
 		ruleList.append(obj);
 
+		// Mark the rule list as updated.
 		_ruleListDirty = true;
 
 		return(true);
 	}
 
+	// Remove the given rule from our list.
 	removeRule(obj) {
+		// Make sure the rule is on the list.
 		if(ruleList.indexOf(obj) == nil)
 			return(nil);
 
+		// Remove the rule.
 		ruleList.removeElement(obj);
 
+		// Make the rule list as updated.
 		_ruleListDirty = true;
 
 		return(true);
 	}
 
+	// Method called by RuleUser.
+	// Returns the current state, computing it if it hasn't been
+	// already computed this turn.
 	check() {
-		if(timestamp == libGlobal.totalTurns)
-			return(_checkCache);
+		// Check to see if we need to compute the state.
+		if(timestamp != libGlobal.totalTurns) {
+			// Remember that we computed the state this turn.
+			timestamp = libGlobal.totalTurns;
 
-		timestamp = libGlobal.totalTurns;
+			// Save the current state.
+			setState(runCheck());
+		}
 
-		return(_checkCache = _runCheck());
+		// Return the saved state.
+		return(getState());
 	}
 
-	_runCheck() {
+	// Actually evaluate the current state (by checking the individual
+	// rules).  Doesn't store the value.
+	runCheck() {
 		local i;
 
+		// Make sure we have rules to check.
 		if(ruleList == nil)
-			return(nil);
+			return(defaultState);
 
+		// Co through the rules, returning immediately if
+		// any of them aren't matches.
 		for(i = 1; i <= ruleList.length; i++)
 			if(ruleList[i].check() != true)
-				return(nil);
+				return(defaultState);
 
-		return(true);
+		// All the rules matches, so we return the negation of
+		// our default.
+		return(!defaultState);
 	}
 
-	// By default, do notify our owner
+	// By default, the callback notifies the rulebook's owner.
 	callback() {
 		if(owner == nil)
 			return;
-		owner.rulebookCallback(self.id);
+		owner.rulebookMatchCallback(self.id);
 	}
 
+	// Called at preinit.
 	initializeRulebook() {
 		if((location == nil) || !location.ofKind(RuleUser))
 			return;
@@ -93,4 +139,37 @@ class Rulebook: Syslog
 
 		owner = location;
 	}
+;
+
+// A rulebook whose default state is nil, and becomes true if ANY of
+// its rules match (their check() method returns true).
+class RulebookMatchAny: Rulebook
+	defaultState = nil
+
+	runCheck() {
+		local i;
+
+		if(ruleList == nil)
+			return(defaultState);
+
+		// Go through the rule list and if any rules match,
+		// return the negation of the default state.
+		for(i = 1; i <= ruleList.length; i++)
+			if(ruleList[i].check() == true)
+				return(!defaultState);
+
+		// None of the rules matched, return the default state.
+		return(defaultState);
+	}
+;
+
+// A rulebook whose default state is nil, and becomes true if all of
+// the rules are matched.  This is identical to the base class, but the
+// more verbosely-named subclass is provided for completeness.
+class RulebookMatchAll: Rulebook;
+
+// A rulebook whose default state is true, and becomes nil if ANY of
+// its rules are matched.
+class RulebookMatchNone: RulebookMatchAny
+	defaultState = true
 ;
