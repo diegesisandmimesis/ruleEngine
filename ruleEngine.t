@@ -17,28 +17,40 @@ ruleEngineModuleID: ModuleID {
         listingOrder = 99
 }
 
+// Base object class for everything in the module.
+// Just a hook for the debugging stuff.
 class RuleEngineObject: Syslog
 	syslogID = 'RuleEngineObject'
 	syslogFlag = 'ruleEngine'
 ;
 
+// The engine class.  It subscribes for notifications before and after
+// every action, as well as running a daemon to be polled every turn
+// after action resolution.
 class RuleEngine: RuleEngineObject, BeforeAfterThing, PreinitObject
 	syslogID = 'RuleEngine'
 	syslogFlag = 'RuleEngine'
 
+	// List of all the Rulebook instances.
 	_rulebookList = perInstance(new Vector())
+
+	// List of all the Rule instances.
 	_ruleList = perInstance(new Vector())
 
+	// Daemon that pings us every turn.
 	_ruleDaemon = nil
 
-	_ruleMatches = nil
+	// Cache of all the rules that matched in the current turn.
+	//_ruleMatches = nil
 
+	// Called at preinit.
 	execute() {
 		initRules();
 		initRulebooks();
 		initRuleEngineDaemon();
 	}
 
+	// Initialize all Rule instances and add them to our list.
 	initRules() {
 		forEachInstance(Rule, function(o) {
 			o.initializeRule();
@@ -47,6 +59,7 @@ class RuleEngine: RuleEngineObject, BeforeAfterThing, PreinitObject
 		_syslog('initialized <<toString(_ruleList.length)>> rules');
 	}
 
+	// Initialize all Rulebook instances and add them to our list.
 	initRulebooks() {
 		forEachInstance(Rulebook, function(o) {
 			o.initializeRulebook();
@@ -56,6 +69,7 @@ class RuleEngine: RuleEngineObject, BeforeAfterThing, PreinitObject
 			rulebooks');
 	}
 
+	// Create our daemon.
 	initRuleEngineDaemon() {
 		_ruleDaemon = new Daemon(self, &updateRuleEngine, 1);
 	}
@@ -84,6 +98,7 @@ class RuleEngine: RuleEngineObject, BeforeAfterThing, PreinitObject
 		return(true);
 	}
 
+	// Called every turn in the beforeAction() window.
 	globalBeforeAction() {
 		_syslog('===globalBeforeAction() START===');
 
@@ -92,44 +107,37 @@ class RuleEngine: RuleEngineObject, BeforeAfterThing, PreinitObject
 		_syslog('===globalBeforeAction() END===');
 	}
 
+	// Called every turn in the afterAction() window.
 	globalAfterAction() {
 		_syslog('===globalAfterAction() START===');
 
 		_syslog('===globalAfterAction() END===');
 	}
 
+	// Called every turn by our daemon, after action resolution.
 	updateRuleEngine() {
 		_syslog('===updateRuleEngine() START===');
-
-		_turnCleanup();
 
 		_syslog('===updateRuleEngine() END===');
 	}
 
 	_turnSetup() {
-		_setRuleMatches();
+		_checkRuleMatches();
 		_updateRulebooks();
 	}
 
-	_turnCleanup() {
-		_clearRuleMatches();
-	}
+	// Poll all the rules, finding out which ones match this turn.
+	_checkRuleMatches() {
+		local i;
 
-	_setRuleMatches() {
-		_ruleMatches = new Vector(_ruleList.length);
+		i = 0;
 		_ruleList.forEach(function(o) {
 			if(o.check(gActor, gDobj, gAction) == true)
-				_ruleMatches.append(o);
+				i += 1;
 		});
 
 		_debug('rule matches, turn <<toString(libGlobal.totalTurns)>>:
-			<<toString(_ruleMatches.length)>>',
-			'ruleEngineMatches');
-	}
-
-	_clearRuleMatches() {
-		_syslog('clearing rule matches');
-		_ruleMatches = nil;
+			<<toString(i)>>', 'ruleEngineMatches');
 	}
 
 	_updateRulebooks() {
