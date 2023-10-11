@@ -2,6 +2,8 @@
 //
 // ruleEngine.t
 //
+//	A simple "business rules" engine for TADS3.
+//
 #include <adv3.h>
 #include <en_us.h>
 
