@@ -119,6 +119,7 @@ class RuleUser: Syslog
 	// Called by Rulebook.callback() by default when the rulebook
 	// matches.
 	rulebookMatchCallback(id) {
+/*
 		// Mark the rulebook as matched.
 		rulebookMatched(id);
 
@@ -126,6 +127,7 @@ class RuleUser: Syslog
 		// if so call the rulebook action.
 		if(checkRulebookMatches() == true)
 			rulebookMatchAction();
+*/
 	}
 
 	// Returns boolean true if all active rulebooks matched this
