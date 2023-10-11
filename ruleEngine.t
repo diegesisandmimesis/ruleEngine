@@ -97,13 +97,13 @@
 //	game objects that want to use rulebooks.
 //
 //	In general an instance's custom rule-handling logic probably wants
-//	to go into rulebookMatchCallback().  It gets called automatically
+//	to go into rulebookMatchAction().  It gets called automatically
 //	by any rulebook belonging to this RuleUser instance whose state is
 //	true for this turn.  The argument is the matching rulebook's ID:
 //
 //		// Custom rule handling goes in here.
 //		// The argument is the matching rulebook's ID.
-//		rulebookMatchCallback(id) {
+//		rulebookMatchAction(id) {
 //			// Whatever
 //		}
 //

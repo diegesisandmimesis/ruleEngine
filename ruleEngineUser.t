@@ -119,26 +119,47 @@ class RuleUser: Syslog
 	// Called by Rulebook.callback() by default when the rulebook
 	// matches.
 	rulebookMatchCallback(id) {
-/*
 		// Mark the rulebook as matched.
 		rulebookMatched(id);
 
-		// Now check to see if all our rulebooks matched, and
-		// if so call the rulebook action.
-		if(checkRulebookMatches() == true)
-			rulebookMatchAction();
-*/
+		rulebookMatchAction(id);
 	}
 
 	// Returns boolean true if all active rulebooks matched this
 	// turn.
-	checkRulebookMatches() {
+	allRulebooksMatched() {
 		local i, l;
 
 		l = rulebook.keysToList();
 		for(i = 1; i <= l.length(); i++) {
 			if(rulebook[l[i]].isActive()
 				&& !checkRulebookMatch(l[i]))
+				return(nil);
+		}
+
+		return(true);
+	}
+
+	anyRulebookMatched() {
+		local i, l;
+
+		l = rulebook.keysToList();
+		for(i = 1; i <= l.length(); i++) {
+			if(rulebook[l[i]].isActive()
+				&& checkRulebookMatch(l[i]))
+				return(true);
+		}
+
+		return(nil);
+	}
+
+	noRulebooksMatched() {
+		local i, l;
+
+		l = rulebook.keysToList();
+		for(i = 1; i <= l.length(); i++) {
+			if(rulebook[l[i]].isActive()
+				&& checkRulebookMatch(l[i]))
 				return(nil);
 		}
 
@@ -152,5 +173,5 @@ class RuleUser: Syslog
 	}
 
 	// By default, do nothing.
-	rulebookMatchAction() {}
+	rulebookMatchAction(id) {}
 ;
