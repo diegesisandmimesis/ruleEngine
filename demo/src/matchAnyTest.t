@@ -63,6 +63,7 @@ startRoom: Room 'Void' "This is a featureless void. ";
 // Declare a RuleEngine instance.
 myController: RuleEngine;
 
+// Anonymous rulebook that matches when any of its rules match.
 RulebookMatchAny
 	callback() {
 		"<.p>All the rules in the rulebook matched on turn
