@@ -118,8 +118,43 @@
 //		// Declare a RuleEngine instance
 //		myRuleEngine: RuleEngine;
 //
-//	
-//	
+//
+// RULE LIFECYCLE
+//
+//	The rule logic is updated at three points in each turn:
+//
+//		beforeAction()
+//			The RuleEngine class subscribes to before and
+//			after action notifications via the mechanism
+//			provided by the beforeAfter module.  This leads
+//			to RuleEngine.globalBeforeAction() to be called
+//			before each action is resolved.
+//
+//			In this window, RuleEngine checks the state of
+//			all Rule instances.  After doing this, it evaluates
+//			the state of all Rulebook instances.  Doing this
+//			will automatically update the RuleUser instances
+//			that own Rulebooks whose state is true for this
+//			turn.
+//
+//		afterAction()
+//			RuleEngine.globalAfterAction() is called via the
+//			same beforeAfter mechanism described above.
+//
+//			By default this does nothing, but subclasses
+//			of RuleEngine (like Scene, provided by the scene
+//			module) can use this as a hook for adding their
+//			own logic.
+//
+//		Daemon update
+//			RuleEngine.updateRuleEngine() is called by its
+//			daemon.  This happens after the action for the
+//			turn is resolved, in the same window as all other
+//			daemons are fired.
+//
+//			By default this does nothing, but subclasses can
+//			use updateRuleEngine() to implement their own
+//			logic.
 //
 #include <adv3.h>
 #include <en_us.h>
@@ -139,6 +174,17 @@ ruleEngineModuleID: ModuleID {
 class RuleEngineObject: Syslog
 	syslogID = 'RuleEngineObject'
 	syslogFlag = 'ruleEngine'
+
+	construct(cfg?) {
+		if(cfg == nil) cfg = object {};
+		cfg.getPropList().forEach(function(o) {
+			if(!cfg.propDefined(o, PropDefDirectly))
+				return;
+			if(!self.propDefined(o))
+				return;
+			self.(o) = cfg.(o);
+		});
+	}
 ;
 
 // The engine class.  It subscribes for notifications before and after
