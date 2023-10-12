@@ -2,6 +2,8 @@
 //
 // ruleEngineTuple.t
 //
+//	A tuple, here, is a set of values associated with an action.
+//
 #include <adv3.h>
 #include <en_us.h>
 

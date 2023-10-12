@@ -1,6 +1,6 @@
 #charset "us-ascii"
 //
-// triggerTest.t
+// triggerTest2.t
 // Version 1.0
 // Copyright 2022 Diegesis & Mimesis
 //
@@ -8,7 +8,7 @@
 //
 // It can be compiled via the included makefile with
 //
-//	# t3make -f triggerTest.t3m
+//	# t3make -f triggerTest2.t3m
 //
 // ...or the equivalent, depending on what TADS development environment
 // you're using.
@@ -48,7 +48,7 @@ gameMain: GameMainDef
 	}
 	showIntro() {
 		"This demo that uses a trigger that matches when the
-		player takes the pebble.
+		player takes or drops either the pebble or the rock.
 		<.p> ";
 	}
 ;
@@ -56,6 +56,7 @@ gameMain: GameMainDef
 startRoom: Room 'Void' "This is a featureless void. ";
 +me: Person;
 +pebble: Thing 'small round pebble' 'pebble' "A small, round pebble. ";
++rock: Thing 'ordinary rock' 'rock' "An ordinary rock. ";
 
 myController: RuleEngine;
 
@@ -65,8 +66,8 @@ RuleUser
 		on turn number <<toString(libGlobal.totalTurns)>>.<.p> ";
 	}
 ;
-// A simple trigger that matches >TAKE PEBBLE
+// A trigger demonstrating the use of lists in trigger properties.
 +Trigger
-	dstObject = pebble
-	action = TakeAction
+	dstObject = static [ pebble, rock ]
+	action = static [ TakeAction, DropAction ]
 ;

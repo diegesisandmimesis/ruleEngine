@@ -2,6 +2,8 @@
 //
 // ruleEngineTrigger.t
 //
+//	A trigger is kind of rule that (may) match details of an action tuple.
+//
 #include <adv3.h>
 #include <en_us.h>
 
