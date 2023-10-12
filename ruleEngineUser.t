@@ -174,4 +174,7 @@ class RuleUser: Syslog
 
 	// By default, do nothing.
 	rulebookMatchAction(id) {}
+
+	// Called at prinit.  By default, do nothing.
+	initializeRuleUser() {}
 ;

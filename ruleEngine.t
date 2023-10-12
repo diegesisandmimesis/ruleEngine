@@ -210,6 +210,7 @@ class RuleEngine: RuleEngineObject, BeforeAfterThing, PreinitObject
 	execute() {
 		initRules();
 		initRulebooks();
+		initRuleUsers();
 		initRuleEngineDaemon();
 	}
 
@@ -230,6 +231,13 @@ class RuleEngine: RuleEngineObject, BeforeAfterThing, PreinitObject
 		});
 		_syslog('initialized <<toString(_rulebookList.length)>>
 			rulebooks');
+	}
+
+	// Initialize all Rulebook instances and add them to our list.
+	initRuleUsers() {
+		forEachInstance(RuleUser, function(o) {
+			o.initializeRuleUser();
+		});
 	}
 
 	// Create our daemon.
@@ -263,26 +271,14 @@ class RuleEngine: RuleEngineObject, BeforeAfterThing, PreinitObject
 
 	// Called every turn in the beforeAction() window.
 	globalBeforeAction() {
-		_syslog('===globalBeforeAction() START===');
-
 		_turnSetup();
-
-		_syslog('===globalBeforeAction() END===');
 	}
 
 	// Called every turn in the afterAction() window.
-	globalAfterAction() {
-		_syslog('===globalAfterAction() START===');
-
-		_syslog('===globalAfterAction() END===');
-	}
+	globalAfterAction() {}
 
 	// Called every turn by our daemon, after action resolution.
-	updateRuleEngine() {
-		_syslog('===updateRuleEngine() START===');
-
-		_syslog('===updateRuleEngine() END===');
-	}
+	updateRuleEngine() {}
 
 	_turnSetup() {
 		_checkRuleMatches();
