@@ -1,6 +1,6 @@
 #charset "us-ascii"
 //
-// ruleUserTest.t
+// triggerTest.t
 // Version 1.0
 // Copyright 2022 Diegesis & Mimesis
 //
@@ -8,7 +8,7 @@
 //
 // It can be compiled via the included makefile with
 //
-//	# t3make -f ruleUserTest.t3m
+//	# t3make -f triggerTest.t3m
 //
 // ...or the equivalent, depending on what TADS development environment
 // you're using.
@@ -61,6 +61,7 @@ gameMain: GameMainDef
 
 startRoom: Room 'Void' "This is a featureless void. ";
 +me: Person;
++pebble: Thing 'small round pebble' 'pebble' "A small, round pebble. ";
 
 // Declare a RuleEngine instance.
 myController: RuleEngine;
@@ -75,6 +76,8 @@ RuleUser
 		<<toString(libGlobal.totalTurns)>>.<.p> ";
 	}
 ;
-+Rulebook;
-++Rule matchRule(data?) { return(libGlobal.totalTurns > 2); };
-++Rule matchRule(data?) { return((libGlobal.totalTurns % 2) != 0); };
++Trigger
+	srcActor = me
+	dstObject = pebble
+	action = TakeAction
+;

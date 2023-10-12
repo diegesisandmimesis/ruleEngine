@@ -59,14 +59,14 @@ tests: Syslog
 		_errors += ((v0 == v) ? 0 : 1);
 	}
 
-	_matchTest(tpl, cfg, v0) {
+	_matchDataTest(tpl, cfg, v0) {
 		local v;
 
-		v = tpl.match(cfg);
-		_debug('matchTest():');
+		v = tpl.matchData(cfg);
+		_debug('matchDataTest():');
 		tpl._debugTuple();
 		_debug('\t<<toString(cfg)>>');
-		_debug('\tmatch() = <<toString(v)>>');
+		_debug('\tmatchData() = <<toString(v)>>');
 
 		_tests += 1;
 		_errors += ((v0 == v) ? 0 : 1);
@@ -81,7 +81,7 @@ tests: Syslog
 		t1 = new Tuple(object { srcObject = obj1 });
 		_matchTupleTest(t0, t1, true);
 
-		_matchTest(t0, object { srcObject = pebble }, true);
+		_matchDataTest(t0, object { srcObject = pebble }, true);
 
 		obj1 = rock;
 		t1 = new Tuple(object { srcObject = obj1 });

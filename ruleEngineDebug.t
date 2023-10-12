@@ -7,3 +7,15 @@
 
 #include "ruleEngine.h"
 
+#ifdef SYSLOG
+
+modify Tuple
+	_debugTuple() {
+		_debug('tuple:');
+		_getDirectProperties(self).forEach(function(o) {
+			_debug('\t<<toString(o)>>:  <<toString(self.(o))>>');
+		});
+	}
+;
+
+#endif // SYSLOG

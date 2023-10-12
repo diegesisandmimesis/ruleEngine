@@ -8,15 +8,15 @@
 #include "ruleEngine.h"
 
 class Tuple: RuleEngineObject
-	srcObject = nil
-	srcActor = nil
+	srcObject = nil			// object originating the action
+	srcActor = nil			// actor originating the action
 
-	dstObject = nil
-	dstActor = nil
+	dstObject = nil			// object receiving the action
+	dstActor = nil			// actor receiving the action
 
-	action = nil
+	action = nil			// the action
 
-	location = nil
+	room = nil			// the location of the action
 
 	construct(cfg?) {
 		inherited(cfg);
@@ -35,7 +35,7 @@ class Tuple: RuleEngineObject
 			dstActor = v[2];
 		}
 		action = canonicalizeAction(action);
-		location = canonicalizeLocation(location);
+		room = canonicalizeLocation(room);
 	}
 
 	// Given an object, return an array of the object and the
@@ -90,7 +90,7 @@ class Tuple: RuleEngineObject
 	}
 
 	// Returns boolean true if the passed args match our defined tuple.
-	match(data?) {
+	matchData(data?) {
 		return(matchTuple(self.createInstance(data)));
 	}
 
@@ -147,28 +147,32 @@ class Tuple: RuleEngineObject
 	matchAction(v)
 		{ return(_matchBit(v, action)); }
 	matchLocation(v)
-		{ return(_matchBit(v, location)); }
+		{ return(_matchBit(v, room)); }
 
 	// Match a passed tuple.
 	matchTuple(v) {
-		local i, l;
-
+		// Make sure the arg is a tuple.
 		if((v == nil) || !v.ofKind(Tuple))
 			return(nil);
 
-		l = _getDirectProperties(self);
-		for(i = 1; i <= l.length(); i++) {
-			if(self.(l[i]) != v.(l[i]))
-				return(nil);
-		}
+		// Test our properties, in order of presumed prevalence (so
+		// as to hopefully short-circuit most checks).
+		if((action != nil) && !matchAction(v.action))
+			return(nil);
+		if((dstObject != nil) && !matchDstObject(v.dstObject))
+			return(nil);
+		if((srcActor != nil) && !matchSrcActor(v.srcActor))
+			return(nil);
+		if((dstActor != nil) && !matchDstActor(v.dstActor))
+			return(nil);
+		if((srcObject != nil) && !matchSrcObject(v.srcObject))
+			return(nil);
+		if((room != nil)
+			&& !matchLocation(v.room))
+			return(nil);
 
 		return(true);
 	}
 
-	_debugTuple() {
-		_debug('tuple:');
-		_getDirectProperties(self).forEach(function(o) {
-			_debug('\t<<toString(o)>>:  <<toString(self.(o))>>');
-		});
-	}
+	_debugTuple() {}
 ;
