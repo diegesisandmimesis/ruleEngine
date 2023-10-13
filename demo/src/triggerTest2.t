@@ -62,7 +62,7 @@ myController: RuleEngine;
 
 RuleUser
 	rulebookMatchAction(id) {
-		"<.p>All the rules in rulebook <q><<toString(id)>></q> matched
+		"<.p>Rulebook <q><<toString(id)>></q> matched
 		on turn number <<toString(libGlobal.totalTurns)>>.<.p> ";
 	}
 ;

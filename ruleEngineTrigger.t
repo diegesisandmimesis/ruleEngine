@@ -14,10 +14,14 @@ class Trigger: Rule, Tuple
 		if(data == nil) data = object {};
 		if(data.srcActor == nil)
 			data.srcActor = gActor;
+		if(data.srcObject == nil)
+			data.srcObject = gIobj;
 		if(data.dstObject == nil)
 			data.dstObject = gDobj;
 		if(data.action == nil)
 			data.action = gAction;
+		if(data.room == nil)
+			data.room = gActor.getOutermostRoom();
 		return(matchData(data));
 	}
 ;
