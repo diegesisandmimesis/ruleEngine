@@ -40,6 +40,8 @@ class Rulebook: Syslog
 	// RuleUser that owns this rulebook, if any.
 	owner = nil
 
+	ruleEngine = nil
+
 	// Getter and setter for the active property.
 	isActive() { return(active == true); }
 	setActive(v) { active = ((v == true) ? true : nil); }

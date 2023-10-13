@@ -218,6 +218,7 @@ class RuleEngine: RuleEngineObject, BeforeAfterThing, PreinitObject
 	initRules() {
 		forEachInstance(Rule, function(o) {
 			o.initializeRule();
+			o.ruleEngine = self;
 			_ruleList.append(o);
 		});
 		_syslog('initialized <<toString(_ruleList.length)>> rules');
@@ -227,6 +228,7 @@ class RuleEngine: RuleEngineObject, BeforeAfterThing, PreinitObject
 	initRulebooks() {
 		forEachInstance(Rulebook, function(o) {
 			o.initializeRulebook();
+			o.ruleEngine = self;
 			_rulebookList.append(o);
 		});
 		_syslog('initialized <<toString(_rulebookList.length)>>
@@ -236,6 +238,7 @@ class RuleEngine: RuleEngineObject, BeforeAfterThing, PreinitObject
 	// Initialize all Rulebook instances and add them to our list.
 	initRuleUsers() {
 		forEachInstance(RuleUser, function(o) {
+			o.ruleEngine = self;
 			o.initializeRuleUser();
 		});
 	}
@@ -243,6 +246,36 @@ class RuleEngine: RuleEngineObject, BeforeAfterThing, PreinitObject
 	// Create our daemon.
 	initRuleEngineDaemon() {
 		_ruleDaemon = new Daemon(self, &updateRuleEngine, 1);
+	}
+
+	addRule(obj) {
+		if((obj == nil) || !obj.ofKind(Rule))
+			return(nil);
+
+		if(_ruleList == nil)
+			return(nil);
+
+		if(_ruleList.indexOf(obj) != nil)
+			return(nil);
+
+		_ruleList.append(obj);
+
+		return(true);
+	}
+
+	removeRule(obj) {
+		if(obj == nil)
+			return(nil);
+
+		if(_ruleList == nil)
+			return(nil);
+
+		if(_ruleList.indexOf(obj) == nil)
+			return(nil);
+
+		_ruleList.removeElement(obj);
+
+		return(true);
 	}
 
 	addRulebook(obj) {
@@ -296,7 +329,8 @@ class RuleEngine: RuleEngineObject, BeforeAfterThing, PreinitObject
 		});
 
 		_debug('rule matches, turn <<toString(libGlobal.totalTurns)>>:
-			<<toString(i)>>', 'ruleEngineMatches');
+			<<toString(i)>> of <<toString(_ruleList.length)>>',
+			'ruleEngineMatches');
 	}
 
 	_updateRulebooks() {

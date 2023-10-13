@@ -56,6 +56,8 @@ class Rule: Syslog
 	// The rulebook we're in.
 	rulebook = nil
 
+	ruleEngine = nil
+
 	// Called at preinit.
 	initializeRule() {
 		_initializeRuleLocation();

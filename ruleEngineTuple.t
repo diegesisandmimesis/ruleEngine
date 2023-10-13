@@ -151,6 +151,24 @@ class Tuple: RuleEngineObject
 	matchLocation(v)
 		{ return(_matchBit(v, room)); }
 
+	matchTupleExact(v) {
+		if((v == nil) || !v.ofKind(Tuple))
+			return(nil);
+		if(action != v.action)
+			return(nil);
+		if(dstObject != v.dstObject)
+			return(nil);
+		if(srcActor != v.srcActor)
+			return(nil);
+		if(srcObject != v.srcObject)
+			return(nil);
+		if(dstActor != v.dstActor)
+			return(nil);
+		if(room != v.room)
+			return(nil);
+		return(true);
+	}
+
 	// Match a passed tuple.
 	matchTuple(v) {
 		// Make sure the arg is a tuple.

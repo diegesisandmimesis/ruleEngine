@@ -16,6 +16,8 @@ class RuleUser: Syslog
 
 	_rulebookIdx = 0
 
+	ruleEngine = nil
+
 	// Add the argument to our list of rulebooks.
 	addRulebook(obj) {
 		// Make sure the arg is a rulebook.
@@ -28,6 +30,9 @@ class RuleUser: Syslog
 
 		// Add it to our rulebook table.
 		rulebook[obj.id] = obj;
+
+		if(ruleEngine != nil)
+			ruleEngine.addRulebook(obj);
 
 		return(true);
 	}
@@ -53,6 +58,9 @@ class RuleUser: Syslog
 		// Add it to our rulebook table.
 		addRulebook(r);
 
+		if(ruleEngine != nil)
+			ruleEngine.addRulebook(r);
+
 		return(r);
 	}
 
@@ -69,6 +77,9 @@ class RuleUser: Syslog
 		// Get the default rulebook, creating it if necessary.
 		if((r = getRulebook()) == nil)
 			r = newRulebook();
+
+		if(ruleEngine != nil)
+			ruleEngine.addRule(obj);
 
 		// Add the rule.
 		return(r.addRule(obj));
