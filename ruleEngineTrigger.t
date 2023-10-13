@@ -14,7 +14,7 @@ class Trigger: Rule, Tuple
 		if(data == nil) data = object {};
 		if(data.srcActor == nil)
 			data.srcActor = gActor;
-		if(data.srcObject == nil)
+		if((data.srcObject == nil) && (gIobj != nil))
 			data.srcObject = gIobj;
 		if(data.dstObject == nil)
 			data.dstObject = gDobj;
