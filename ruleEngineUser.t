@@ -37,6 +37,14 @@ class RuleUser: Syslog
 		return(true);
 	}
 
+	removeRulebook(obj) {
+		if(obj == nil) return(nil);
+		if(rulebook[obj.id] == nil) return(nil);
+		rulebook[obj.id] = nil;
+		if(ruleEngine != nil) ruleEngine.removeRulebook(obj);
+		return(true);
+	}
+
 	// Returns the given rulebook.
 	getRulebook(id?) { return(rulebook[(id ? id : 'default')]); }
 
@@ -83,6 +91,15 @@ class RuleUser: Syslog
 
 		// Add the rule.
 		return(r.addRule(obj));
+	}
+
+	removeRule(obj) {
+		local r;
+
+		if(obj == nil) return(nil);
+		if((r = getRulebook()) == nil) return(nil);
+		if(ruleEngine != nil) ruleEngine.removeRule(obj);
+		return(r.removeRule(obj));
 	}
 
 	// Boolean true if we have more than zero rulebooks.

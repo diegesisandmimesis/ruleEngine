@@ -67,6 +67,9 @@ class Rulebook: Syslog
 		// Actually add the rule.
 		ruleList.append(obj);
 
+		if(ruleEngine != nil)
+			ruleEngine.addRule(obj);
+
 		// Mark the rule list as updated.
 		_ruleListDirty = true;
 
@@ -81,6 +84,9 @@ class Rulebook: Syslog
 
 		// Remove the rule.
 		ruleList.removeElement(obj);
+
+		if(ruleEngine != nil)
+			ruleEngine.removeRule(obj);
 
 		// Make the rule list as updated.
 		_ruleListDirty = true;
