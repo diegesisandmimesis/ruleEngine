@@ -120,7 +120,7 @@ class Rulebook: Syslog
 		if(ruleList == nil)
 			return(defaultState);
 
-		// Co through the rules, returning immediately if
+		// Go through the rules, returning immediately if
 		// any of them aren't matches.
 		for(i = 1; i <= ruleList.length; i++)
 			if(ruleList[i].check() != true)
@@ -180,4 +180,43 @@ class RulebookMatchAll: Rulebook;
 // its rules are matched.
 class RulebookMatchNone: RulebookMatchAny
 	defaultState = true
+;
+
+// A rulebook that "locks" the first time its state changes from the default.
+class RulebookPermanent: Rulebook
+	// Is the state locked?
+	locked = nil
+
+	// Updated check() method.
+	check() {
+		local v;
+
+		// If the state is locked, we just return the existing state.
+		if(locked == true)
+			return(getState());
+
+		// We're not locked, so we check the current state, using
+		// the inherited check() logic.
+		// If the current state is the default state, we just return
+		// it.
+		if((v = inherited()) == defaultState)
+			return(v);
+
+		// If we reach here, the current state is no longer the
+		// default state, so we lock the state.
+		lockState();
+
+		// Return the state (which will always be !defaultState).
+		return(v);
+	}
+
+	// Finialize our state.
+	lockState() {
+		// Set the locked flag.
+		locked = true;
+
+		// If we're owned by a 
+		if(owner != nil)
+			owner.finalizeRulebook(self);
+	}
 ;

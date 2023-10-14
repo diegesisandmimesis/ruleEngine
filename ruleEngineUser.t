@@ -8,14 +8,25 @@
 #include "ruleEngine.h"
 
 class RuleUser: Syslog
+	// Hash table of our rulebooks, keyed by rulebook ID.
 	rulebook = perInstance(new LookupTable())
 
+	// Hash table of rulebooks that are "finalized".  These are
+	// rulebooks whose state we wish to preserve but no longer update.
+	finalizedRulebook = perInstance(new LookupTable())
+
+	// Hash table of rulebook matches, keyed by rulebook ID, values
+	// are the turn number of the last turn the rulebook matched.
 	rulebookMatches = perInstance(new LookupTable())
 
+	// Class to use for rulebook instances.
 	rulebookClass = Rulebook
 
+	// Arbitrary index for rulebooks.  Used to create a rulebook ID
+	// if one isn't declared in the rulebook definition.
 	_rulebookIdx = 0
 
+	// The RuleEngine that's managing us.
 	ruleEngine = nil
 
 	// Add the argument to our list of rulebooks.
@@ -43,6 +54,16 @@ class RuleUser: Syslog
 		rulebook[obj.id] = nil;
 		if(ruleEngine != nil) ruleEngine.removeRulebook(obj);
 		return(true);
+	}
+
+	// "Finalize" a rulebook.  This removes it from our rulebook list
+	// (and the RuleEngine's rulebook list), which means it will no
+	// longer be updated.  But we keep a reference to it, so it won't
+	// be garbage collected, allowing us to refer to the state later.
+	finalizeRulebook(obj) {
+		if(obj == nil) return(nil);
+		finalizedRulebook[obj.id] = obj;
+		return(removeRulebook(obj));
 	}
 
 	// Returns the given rulebook.
