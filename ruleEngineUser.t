@@ -66,6 +66,16 @@ class RuleUser: Syslog
 		return(removeRulebook(obj));
 	}
 
+	// "Finalize" all our rulebooks.
+	finalizeRulebooks() {
+		local l;
+
+		l = rulebook.keysToList();
+		l.forEach(function(o) {
+			finalizeRulebook(rulebook[o]);
+		});
+	}
+
 	// Returns the given rulebook.
 	getRulebook(id?) { return(rulebook[(id ? id : 'default')]); }
 
