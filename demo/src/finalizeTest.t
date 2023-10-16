@@ -47,14 +47,9 @@ gameMain: GameMainDef
 		runGame(true);
 	}
 	showIntro() {
-		"This demo uses a RuleUser instance that owns a rulebook
-		containing two rules.  One of the rule matches on odd-numbered
-		turns, and the other matches whenever the turn number is
-		greater than two (the same rules as used in the rulesTest.t
-		demo).
-		<.p>
-		There should be output only when both match, which should
-		start on turn three and then every other turn thereafter.
+		"This demo uses a <q>permanent</q> rulebook, which
+		should automatically remove itself from the rulebook
+		list after the first time its rules match.
 		<.p> ";
 	}
 ;
@@ -63,13 +58,8 @@ startRoom: Room 'Void' "This is a featureless void. ";
 +me: Person;
 +pebble: Thing 'small round pebble' 'pebble' "A small, round pebble. ";
 
-// Declare a RuleEngine instance.
 myController: RuleEngineOptimized;
 
-// Declare a RuleUser instance.
-// Normally this would be a mixin for something else (like a Scene),
-// but here we're just testing the rulebook checking logic, so
-// we use an anonymous object that's "just" a RuleUser instance.
 RuleUser
 	rulebookClass = RulebookPermanent
 	rulebookMatchAction(id) {
