@@ -11,9 +11,10 @@ class RuleUser: Syslog
 	// Hash table of our rulebooks, keyed by rulebook ID.
 	rulebook = perInstance(new LookupTable())
 
-	// Hash table of rulebooks that are "finalized".  These are
+	// Hash table of rulebooks that are disabled.  These are
 	// rulebooks whose state we wish to preserve but no longer update.
-	finalizedRulebook = perInstance(new LookupTable())
+	disabledRulebook = perInstance(new LookupTable())
+
 
 	// Hash table of rulebook matches, keyed by rulebook ID, values
 	// are the turn number of the last turn the rulebook matched.
@@ -56,23 +57,57 @@ class RuleUser: Syslog
 		return(true);
 	}
 
-	// "Finalize" a rulebook.  This removes it from our rulebook list
+	// Disable a rulebook.  This removes it from our rulebook list
 	// (and the RuleEngine's rulebook list), which means it will no
 	// longer be updated.  But we keep a reference to it, so it won't
 	// be garbage collected, allowing us to refer to the state later.
-	finalizeRulebook(obj) {
+	disableRulebook(obj) {
 		if(obj == nil) return(nil);
-		finalizedRulebook[obj.id] = obj;
+		disabledRulebook[obj.id] = obj;
 		return(removeRulebook(obj));
 	}
 
-	// "Finalize" all our rulebooks.
-	finalizeRulebooks() {
+	enableRulebook(obj) {
+		if(obj == nil) return(nil);
+		disabledRulebook.removeElement(obj);
+		return(addRulebook(obj));
+	}
+
+	disableRulebookByID(id) {
+		local obj;
+
+		if((obj = rulebook[id]) == nil)
+			return(nil);
+
+		return(disableRulebook(obj));
+	}
+
+	enableRulebookByID(id) {
+		local obj;
+
+		if((obj = disabledRulebook[id]) == nil)
+			return(nil);
+
+		return(enableRulebook(obj));
+	}
+
+	// Disable all our rulebooks.
+	disableAllRulebooks() {
 		local l;
 
 		l = rulebook.keysToList();
 		l.forEach(function(o) {
-			finalizeRulebook(rulebook[o]);
+			disableRulebook(rulebook[o]);
+		});
+	}
+
+	// Enable all our disabled rulebooks.
+	enableAllRulebooks() {
+		local l;
+
+		l = disabledRulebook.keysToList();
+		l.forEach(function(o) {
+			enableRulebook(disabledRulebook[o]);
 		});
 	}
 

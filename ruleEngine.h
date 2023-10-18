@@ -32,7 +32,7 @@
 #error "senseGrep should be in /home/user/tads/senseGrep ."
 #endif // SENSE_GREP_H
 
-Rulebook template 'id'?;
+Rulebook template 'id'? +priority?;
 Rule template 'id'?;
 
 #define RULE_ENGINE_H

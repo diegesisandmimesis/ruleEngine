@@ -217,6 +217,6 @@ class RulebookPermanent: Rulebook
 
 		// If we're owned by a 
 		if(owner != nil)
-			owner.finalizeRulebook(self);
+			owner.disableRulebook(self);
 	}
 ;

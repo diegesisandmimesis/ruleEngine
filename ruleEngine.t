@@ -190,7 +190,7 @@ class RuleEngineObject: Syslog
 // The engine class.  It subscribes for notifications before and after
 // every action, as well as running a daemon to be polled every turn
 // after action resolution.
-class RuleEngine: RuleEngineObject, BeforeAfterThing, PreinitObject
+class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
 	syslogID = 'RuleEngine'
 	syslogFlag = 'RuleEngine'
 

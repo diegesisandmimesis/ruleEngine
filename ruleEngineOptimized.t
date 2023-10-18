@@ -13,7 +13,7 @@
 // short-circuiting logic in the Rulebook's logic (that is, stopping rule
 // evaluation as soon as it has evaluated enough to determine the current
 // state).
-class RuleEngineOptimized: RuleEngine
+class RuleEngineOptimized: RuleEngineBase
 	syslogID = 'RuleEngineOptimized'
 	syslogFlag = 'RuleEngine'
 
@@ -36,3 +36,5 @@ class RuleEngineOptimized: RuleEngine
 		});
 	}
 ;
+
+class RuleEngine: RuleEngineOptimized;

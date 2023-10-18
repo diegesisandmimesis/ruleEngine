@@ -14,10 +14,15 @@ class Trigger: Rule, Tuple
 		if(data == nil) data = object {};
 		if(data.srcActor == nil)
 			data.srcActor = gActor;
-		if((data.srcObject == nil) && (gIobj != nil))
-			data.srcObject = gIobj;
-		if(data.dstObject == nil)
-			data.dstObject = gDobj;
+		if(gIobj == nil) {
+			if(data.dstObject == nil)
+				data.dstObject = gDobj;
+		} else {
+			if(data.srcObject == nil)
+				data.srcObject = gDobj;
+			if(data.dstObject == nil)
+				data.dstObject = gIobj;
+		}
 		if(data.action == nil)
 			data.action = gAction;
 		if(data.room == nil)
