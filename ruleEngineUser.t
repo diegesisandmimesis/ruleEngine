@@ -266,6 +266,10 @@ class RuleUser: Syslog
 			== libGlobal.totalTurns);
 	}
 
+	enable() { return(ruleEngine && ruleEngine.addRuleUser(self)); }
+	disable() { return(ruleEngine && ruleEngine.removeRuleUser(self)); }
+
+
 	// By default, do nothing.
 	rulebookMatchAction(id) {}
 

@@ -31,6 +31,8 @@ class Rulebook: Syslog
 	// Turn number of last time the state was computed.
 	timestamp = nil
 
+	callbackTimestamp = nil
+
 	// Property to hold our rules.
 	ruleList = nil
 
@@ -103,6 +105,9 @@ class Rulebook: Syslog
 			// Remember that we computed the state this turn.
 			timestamp = libGlobal.totalTurns;
 
+			if(gActionIsNested == true)
+				timestamp = nil;
+
 			// Save the current state.
 			setState(runCheck());
 		}
@@ -129,6 +134,16 @@ class Rulebook: Syslog
 		// All the rules matches, so we return the negation of
 		// our default.
 		return(!defaultState);
+	}
+
+	_callback() {
+
+		if(callbackTimestamp == libGlobal.totalTurns)
+			return;
+		callbackTimestamp = libGlobal.totalTurns;
+		if(gActionIsNested == true)
+			callbackTimestamp == nil;
+		callback();
 	}
 
 	// By default, the callback notifies the rulebook's owner.

@@ -366,7 +366,7 @@ class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
 	_updateRulebooks() {
 		_rulebookList.forEach(function(o) {
 			if(o.check() == true)
-				o.callback();
+				o._callback();
 		});
 	}
 

@@ -32,6 +32,10 @@
 #error "senseGrep should be in /home/user/tads/senseGrep ."
 #endif // SENSE_GREP_H
 
+#ifndef gActionIsNested
+#define gActionIsNested (gAction.parentAction != nil)
+#endif // gActionIsNested
+
 Rulebook template 'id'? +priority?;
 Rule template 'id'?;
 
