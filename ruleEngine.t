@@ -200,11 +200,11 @@ class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
 	// List of all the Rule instances.
 	_ruleList = perInstance(new Vector())
 
+	// List of all RuleUser instances we need to update.
+	_ruleUserList = perInstance(new Vector())
+
 	// Daemon that pings us every turn.
 	_ruleDaemon = nil
-
-	// Cache of all the rules that matched in the current turn.
-	//_ruleMatches = nil
 
 	// Called at preinit.
 	execute() {
@@ -240,6 +240,7 @@ class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
 		forEachInstance(RuleUser, function(o) {
 			o.ruleEngine = self;
 			o.initializeRuleUser();
+			_ruleUserList.append(o);
 		});
 	}
 
@@ -302,16 +303,45 @@ class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
 		return(true);
 	}
 
+	addRuleUser(obj) {
+		if((obj == nil) || !obj.ofKind(RuleUser))
+			return(nil);
+
+		if(_ruleUserList.indexOf(obj) != nil)
+			return(nil);
+
+		_ruleUserList.append(obj);
+
+		return(true);
+	}
+
+	removeRuleUser(obj) {
+		if(obj == nil)
+			return(nil);
+
+		if(_ruleUserList.indexOf(obj) == nil)
+			return(nil);
+
+		_ruleUserList.removeElement(obj);
+
+		return(true);
+	}
+
 	// Called every turn in the beforeAction() window.
 	globalBeforeAction() {
 		_turnSetup();
+		_ruleUserBeforeAction();
 	}
 
 	// Called every turn in the afterAction() window.
-	globalAfterAction() {}
+	globalAfterAction() {
+		_ruleUserAfterAction();
+	}
 
 	// Called every turn by our daemon, after action resolution.
-	updateRuleEngine() {}
+	updateRuleEngine() {
+		_ruleUserAction();
+	}
 
 	_turnSetup() {
 		_checkRuleMatches();
@@ -338,5 +368,17 @@ class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
 			if(o.check() == true)
 				o.callback();
 		});
+	}
+
+	_ruleUserBeforeAction() {
+		_ruleUserList.forEach(function(o) { o.tryBeforeAction(); });
+	}
+
+	_ruleUserAfterAction() {
+		_ruleUserList.forEach(function(o) { o.tryAfterAction(); });
+	}
+
+	_ruleUserAction() {
+		_ruleUserList.forEach(function(o) { o.tryAction(); });
 	}
 ;

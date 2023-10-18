@@ -271,4 +271,8 @@ class RuleUser: Syslog
 
 	// Called at prinit.  By default, do nothing.
 	initializeRuleUser() {}
+
+	tryBeforeAction() {}
+	tryAfterAction() {}
+	tryAction() {}
 ;
