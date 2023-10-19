@@ -29,12 +29,16 @@ class RuleEngineOptimized: RuleEngineBase
 
 	_turnSetup() { _updateRulebooks(); }
 
+/*
 	_updateRulebooks() {
 		_rulebookList.forEach(function(o) {
 			if(o.check() == true)
 				o.callback();
 		});
+		_syslog('evaluated <<toString(_rulebookList.length)>>
+			rulebooks');
 	}
+*/
 ;
 
 class RuleEngine: RuleEngineOptimized;

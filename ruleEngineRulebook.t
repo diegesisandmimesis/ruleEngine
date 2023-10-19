@@ -103,10 +103,10 @@ class Rulebook: Syslog
 		// Check to see if we need to compute the state.
 		if(timestamp != libGlobal.totalTurns) {
 			// Remember that we computed the state this turn.
-			timestamp = libGlobal.totalTurns;
-
 			if(gActionIsNested == true)
 				timestamp = nil;
+			else
+				timestamp = libGlobal.totalTurns;
 
 			// Save the current state.
 			setState(runCheck());
@@ -137,12 +137,12 @@ class Rulebook: Syslog
 	}
 
 	_callback() {
-
 		if(callbackTimestamp == libGlobal.totalTurns)
 			return;
-		callbackTimestamp = libGlobal.totalTurns;
 		if(gActionIsNested == true)
 			callbackTimestamp == nil;
+		else
+			callbackTimestamp = libGlobal.totalTurns;
 		callback();
 	}
 

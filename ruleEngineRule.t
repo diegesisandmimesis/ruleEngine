@@ -92,9 +92,10 @@ class Rule: Syslog
 
 
 		// Remember that we're current as of this turn.
-		timestamp = libGlobal.totalTurns;
 		if(gActionIsNested == true)
 			timestamp == nil;
+		else
+			timestamp = libGlobal.totalTurns;
 
 		// If the rule state wouldn't change, bail.
 		if(state == v)
@@ -112,13 +113,12 @@ class Rule: Syslog
 
 	// Return the current state, updating it if necessary.
 	check(actor?, obj?, action?) {
-
 		// Check the timestamp, and re-check our condition(s)
 		// if they haven't been checked this turn.
 		if(timestamp != libGlobal.totalTurns)
 			setState(matchRule());
-		if(gActionIsNested == true)
-			timestamp = nil;
+		//if(gActionIsNested == true)
+			//timestamp = nil;
 		return(getState());
 	}
 ;
