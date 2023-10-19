@@ -100,7 +100,7 @@ class ExpensiveRule: Rule
 // We use RuleEngineOptimized.  You can comment that out and try with the
 // base RuleEngine class to see the performance difference.
 #ifdef NO_OPTIMIZATION
-myController: RuleEngine;
+myController: RuleEngineBase;
 #else // NO_OPTIMIZATION
 myController: RuleEngineOptimized;
 #endif // NO_OPTIMIZATION

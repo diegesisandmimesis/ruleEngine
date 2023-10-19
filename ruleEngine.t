@@ -217,9 +217,9 @@ class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
 	// Initialize all Rule instances and add them to our list.
 	initRules() {
 		forEachInstance(Rule, function(o) {
+			_ruleList.append(o);
 			o.initializeRule();
 			o.ruleEngine = self;
-			_ruleList.append(o);
 		});
 		_syslog('initialized <<toString(_ruleList.length)>> rules');
 	}
@@ -227,9 +227,9 @@ class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
 	// Initialize all Rulebook instances and add them to our list.
 	initRulebooks() {
 		forEachInstance(Rulebook, function(o) {
+			_rulebookList.append(o);
 			o.initializeRulebook();
 			o.ruleEngine = self;
-			_rulebookList.append(o);
 		});
 		_syslog('initialized <<toString(_rulebookList.length)>>
 			rulebooks');
@@ -238,9 +238,9 @@ class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
 	// Initialize all Rulebook instances and add them to our list.
 	initRuleUsers() {
 		forEachInstance(RuleUser, function(o) {
+			_ruleUserList.append(o);
 			o.ruleEngine = self;
 			o.initializeRuleUser();
-			_ruleUserList.append(o);
 		});
 	}
 
@@ -368,10 +368,14 @@ class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
 			if(o.check() == true)
 				o._callback();
 		});
+		_syslog('evaluated <<toString(_rulebookList.length)>>
+			rulebooks');
 	}
 
 	_ruleUserBeforeAction() {
 		_ruleUserList.forEach(function(o) { o.tryBeforeAction(); });
+		_syslog('evaluating <<toString(_ruleUserList.length)>>
+			rule users');
 	}
 
 	_ruleUserAfterAction() {
