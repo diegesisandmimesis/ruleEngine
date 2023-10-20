@@ -185,6 +185,41 @@ class RuleEngineObject: Syslog
 			self.(o) = cfg.(o);
 		});
 	}
+
+	// Test two args for equal-ish-ness.
+	// Returns boolean true if:
+	//	0)	ref is nil
+	//	1)	v is identically ref
+	//	2)	v is an instance of ref
+	//	3)	ref is a list and 1) or 2) apply to an element in it
+	testArgs(v, ref) {
+		local i;
+
+		// No criteria, always matches.
+		if(ref == nil)
+			return(true);
+
+		// Non-nil criteria with a nil value always fails.
+		if(v == nil)
+			return(nil);
+
+		// If ref is a list, check its elements against v
+		if(ref.ofKind(List)) {
+			for(i = 1; i <= ref.length; i++) {
+				if((ref[i] == v) || v.ofKind(ref[i]))
+					return(true);
+			}
+
+			return(nil);
+		}
+
+		// Not a list, check v against ref directly.
+		if((v == ref) || v.ofKind(ref))
+			return(true);
+
+		// Nope, fail.
+		return(nil);
+	}
 ;
 
 // The engine class.  It subscribes for notifications before and after
@@ -219,7 +254,7 @@ class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
 		forEachInstance(Rule, function(o) {
 			_ruleList.append(o);
 			o.initializeRule();
-			o.ruleEngine = self;
+			o._ruleEngine = self;
 		});
 		_syslog('initialized <<toString(_ruleList.length)>> rules');
 	}
@@ -229,7 +264,7 @@ class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
 		forEachInstance(Rulebook, function(o) {
 			_rulebookList.append(o);
 			o.initializeRulebook();
-			o.ruleEngine = self;
+			o._ruleEngine = self;
 		});
 		_syslog('initialized <<toString(_rulebookList.length)>>
 			rulebooks');
@@ -239,7 +274,7 @@ class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
 	initRuleUsers() {
 		forEachInstance(RuleUser, function(o) {
 			_ruleUserList.append(o);
-			o.ruleEngine = self;
+			o._ruleEngine = self;
 			o.initializeRuleUser();
 		});
 	}

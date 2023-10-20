@@ -7,3 +7,4 @@ source: ruleEngineUser.t
 source: ruleEngineTuple.t
 source: ruleEngineTrigger.t
 source: ruleEngineDebug.t
+source: ruleEngineLint.t

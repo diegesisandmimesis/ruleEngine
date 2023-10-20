@@ -28,7 +28,8 @@ class RuleUser: Syslog
 	_rulebookIdx = 0
 
 	// The RuleEngine that's managing us.
-	ruleEngine = nil
+	ruleEngine = ((_ruleEngine != nil) ? _ruleEngine : gRuleEngine)
+	_ruleEngine = nil
 
 	// Add the argument to our list of rulebooks.
 	addRulebook(obj) {

@@ -39,4 +39,6 @@
 Rulebook template 'id'? +priority?;
 Rule template 'id'?;
 
+#define gRuleEngine (ruleEngineLinter._engine)
+
 #define RULE_ENGINE_H
