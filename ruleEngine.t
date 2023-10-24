@@ -399,25 +399,29 @@ class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
 	}
 
 	_updateRulebooks() {
+		_syslog('_updateRulebooks: evaluating
+			<<toString(_rulebookList.length)>> rulebooks');
 		_rulebookList.forEach(function(o) {
 			if(o.check() == true)
-				o._callback();
+				o.tryCallback();
 		});
-		_syslog('evaluated <<toString(_rulebookList.length)>>
-			rulebooks');
 	}
 
 	_ruleUserBeforeAction() {
+		_syslog('_ruleUserBeforeAction: evaluating
+			<<toString(_ruleUserList.length)>> rule users');
 		_ruleUserList.forEach(function(o) { o.tryBeforeAction(); });
-		_syslog('evaluating <<toString(_ruleUserList.length)>>
-			rule users');
 	}
 
 	_ruleUserAfterAction() {
+		_syslog('_ruleUserAfterAction: evaluating
+			<<toString(_ruleUserList.length)>> rule users');
 		_ruleUserList.forEach(function(o) { o.tryAfterAction(); });
 	}
 
 	_ruleUserAction() {
+		_syslog('_ruleUserAction: evaluating
+			<<toString(_ruleUserList.length)>> rule users');
 		_ruleUserList.forEach(function(o) { o.tryAction(); });
 	}
 ;

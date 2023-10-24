@@ -10,7 +10,7 @@
 #include "ruleEngine.h"
 
 class Trigger: Rule, Tuple
-	matchRule(data?) {
+	getTurnConfig(data?) {
 		if(data == nil) data = object {};
 		if(data.srcActor == nil)
 			data.srcActor = gActor;
@@ -27,6 +27,10 @@ class Trigger: Rule, Tuple
 			data.action = gAction;
 		if(data.room == nil)
 			data.room = gActor.getOutermostRoom();
-		return(matchData(data));
+
+		return(data);
+	}
+	matchRule(data?) {
+		return(matchData(getTurnConfig(data)));
 	}
 ;

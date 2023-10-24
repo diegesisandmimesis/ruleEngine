@@ -1,6 +1,5 @@
 -D LANGUAGE=en_us
 -D MESSAGESTYLE=neu
-#-D SYSLOG
 -Fy obj -Fo obj
 -Fs ../..
 -o games/triggerTest2.t3

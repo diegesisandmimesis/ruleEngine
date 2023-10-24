@@ -50,7 +50,13 @@ class Rulebook: Syslog
 
 	// Getter and setter for the state.
 	getState() { return(state == true); }
-	setState(v?) { state = ((v == true) ? true : nil); }
+	setState(v?) {
+		if(gActionIsNested == true)
+			timestamp = nil;
+		else
+			timestamp = libGlobal.totalTurns;
+		state = ((v == true) ? true : nil);
+	}
 
 	// Adds a rule.
 	addRule(obj) {
@@ -101,16 +107,9 @@ class Rulebook: Syslog
 	// already computed this turn.
 	check() {
 		// Check to see if we need to compute the state.
-		if(timestamp != libGlobal.totalTurns) {
-			// Remember that we computed the state this turn.
-			if(gActionIsNested == true)
-				timestamp = nil;
-			else
-				timestamp = libGlobal.totalTurns;
-
-			// Save the current state.
+		if((gActionIsNested == true)
+			|| (timestamp != libGlobal.totalTurns))
 			setState(runCheck());
-		}
 
 		// Return the saved state.
 		return(getState());
@@ -136,13 +135,17 @@ class Rulebook: Syslog
 		return(!defaultState);
 	}
 
-	_callback() {
-		if(callbackTimestamp == libGlobal.totalTurns)
+	// By default, we only run the callback once per turn.
+	tryCallback() {
+		if((gActionIsNested != true)
+			&& (callbackTimestamp == libGlobal.totalTurns))
 			return;
+			
 		if(gActionIsNested == true)
-			callbackTimestamp == nil;
+			callbackTimestamp = nil;
 		else
 			callbackTimestamp = libGlobal.totalTurns;
+
 		callback();
 	}
 
