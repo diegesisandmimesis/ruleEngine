@@ -41,6 +41,8 @@ class RuleUser: Syslog
 		if(obj.id == nil)
 			obj.id = (_rulebookIdx += 1);
 
+		obj.owner = self;
+
 		// Add it to our rulebook table.
 		rulebook[obj.id] = obj;
 

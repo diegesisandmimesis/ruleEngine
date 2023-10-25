@@ -75,6 +75,8 @@ class Rulebook: Syslog
 		// Actually add the rule.
 		ruleList.append(obj);
 
+		obj.owner = self;
+
 		if(ruleEngine != nil)
 			ruleEngine.addRule(obj);
 
