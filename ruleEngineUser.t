@@ -31,6 +31,9 @@ class RuleUser: Syslog
 	ruleEngine = ((_ruleEngine != nil) ? _ruleEngine : gRuleEngine)
 	_ruleEngine = nil
 
+	// Set by the rule engine
+	_initFlag = nil
+
 	// Add the argument to our list of rulebooks.
 	addRulebook(obj) {
 		// Make sure the arg is a rulebook.
@@ -273,6 +276,7 @@ class RuleUser: Syslog
 		enableAllRulebooks();
 		return(ruleEngine && ruleEngine.addRuleUser(self));
 	}
+
 	disableRuleUser() {
 		disableAllRulebooks();
 		return(ruleEngine && ruleEngine.removeRuleUser(self));

@@ -58,6 +58,8 @@ class Rule: Syslog
 
 	ruleEngine = nil
 
+	_initFlag = nil
+
 	// Called at preinit.
 	initializeRule() {
 		_initializeRuleLocation();

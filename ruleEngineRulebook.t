@@ -36,6 +36,9 @@ class Rulebook: Syslog
 	// Property to hold our rules.
 	ruleList = nil
 
+	// Set by the RuleEngine
+	_initFlag = nil
+
 	// Flag to indicate rule list has been updated.
 	_ruleListDirty = nil
 
@@ -166,6 +169,8 @@ class Rulebook: Syslog
 		location.addRulebook(self);
 
 		owner = location;
+
+		_initFlag = true;
 	}
 ;
 

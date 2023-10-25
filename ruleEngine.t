@@ -247,12 +247,17 @@ class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
 		initRulebooks();
 		initRuleUsers();
 		initRuleEngineDaemon();
+
+		_debug('rulebooks:  <<toString(_rulebookList.length)>>');
+		_debug('rule users:  <<toString(_ruleUserList.length)>>');
 	}
 
 	// Initialize all Rule instances and add them to our list.
 	initRules() {
 		forEachInstance(Rule, function(o) {
-			_ruleList.append(o);
+			if(o._initFlag == true)
+				return;
+			addRule(o);
 			o.initializeRule();
 			o._ruleEngine = self;
 		});
@@ -262,7 +267,10 @@ class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
 	// Initialize all Rulebook instances and add them to our list.
 	initRulebooks() {
 		forEachInstance(Rulebook, function(o) {
-			_rulebookList.append(o);
+			if(o._initFlag == true)
+				return;
+			if(addRulebook(o) != true)
+				return;
 			o.initializeRulebook();
 			o._ruleEngine = self;
 		});
@@ -273,7 +281,10 @@ class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
 	// Initialize all Rulebook instances and add them to our list.
 	initRuleUsers() {
 		forEachInstance(RuleUser, function(o) {
-			_ruleUserList.append(o);
+			if(o._initFlag == true)
+				return;
+			if(addRuleUser(o) != true)
+				return;
 			o._ruleEngine = self;
 			o.initializeRuleUser();
 		});
@@ -295,6 +306,8 @@ class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
 			return(nil);
 
 		_ruleList.append(obj);
+
+		obj._initFlag = true;
 
 		return(true);
 	}
@@ -323,6 +336,10 @@ class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
 
 		_rulebookList.append(obj);
 
+		obj._initFlag = true;
+
+		_debug('addRulebook():  <<toString(_rulebookList.length)>>');
+
 		return(true);
 	}
 
@@ -335,6 +352,8 @@ class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
 
 		_rulebookList.removeElement(obj);
 
+		_debug('removeRulebook():  <<toString(_rulebookList.length)>>');
+
 		return(true);
 	}
 
@@ -346,6 +365,8 @@ class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
 			return(nil);
 
 		_ruleUserList.append(obj);
+
+		obj._initFlag = true;
 
 		return(true);
 	}
