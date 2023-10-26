@@ -75,4 +75,4 @@ RuleUser
 	dstObject = static [ pebble, rock ]
 	action = static [ TakeAction, DropAction ]
 ;
-+Rule matchRule(data?) { return(pebble.location == me); };
++Rule matchRule(data?) { return(pebble.getCarryingActor() == me); };
