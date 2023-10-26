@@ -11,8 +11,8 @@
 // By default, a rulebook's check() method will return true if all of
 // the rules in the rulebook are matched (that is, their individual
 // check() methods will all return true).
-class Rulebook: Syslog
-	syslogID = 'Rulebook'
+class Rulebook: RuleEngineObject
+	syslogID = id
 
 	// Unique ID for this rulebook
 	id = nil
@@ -36,16 +36,11 @@ class Rulebook: Syslog
 	// Property to hold our rules.
 	ruleList = nil
 
-	// Set by the RuleEngine
-	_initFlag = nil
-
 	// Flag to indicate rule list has been updated.
 	_ruleListDirty = nil
 
 	// RuleUser that owns this rulebook, if any.
-	owner = nil
-
-	ruleEngine = nil
+	ruleUser = nil
 
 	// Getter and setter for the active property.
 	isActive() { return(active == true); }
@@ -78,8 +73,6 @@ class Rulebook: Syslog
 		// Actually add the rule.
 		ruleList.append(obj);
 
-		obj.owner = self;
-
 		if(ruleEngine != nil)
 			ruleEngine.addRule(obj);
 
@@ -107,6 +100,13 @@ class Rulebook: Syslog
 		return(true);
 	}
 
+	tryCheck(type?) {
+		if(type == ruleEngineBeforeAction)
+			return(runCheck(Trigger) != defaultState);
+
+		return(check());
+	}
+
 	// Method called by RuleUser.
 	// Returns the current state, computing it if it hasn't been
 	// already computed this turn.
@@ -122,7 +122,7 @@ class Rulebook: Syslog
 
 	// Actually evaluate the current state (by checking the individual
 	// rules).  Doesn't store the value.
-	runCheck() {
+	runCheck(type?) {
 		local i;
 
 		// Make sure we have rules to check.
@@ -132,7 +132,7 @@ class Rulebook: Syslog
 		// Go through the rules, returning immediately if
 		// any of them aren't matches.
 		for(i = 1; i <= ruleList.length; i++)
-			if(ruleList[i].check() != true)
+			if(ruleList[i].check(type) != true)
 				return(defaultState);
 
 		// All the rules matches, so we return the negation of
@@ -154,23 +154,29 @@ class Rulebook: Syslog
 		callback();
 	}
 
-	// By default, the callback notifies the rulebook's owner.
+	// By default, the callback notifies the rulebook's ruleUser.
 	callback() {
-		if(owner == nil)
+		if(ruleUser == nil)
 			return;
-		owner.rulebookMatchCallback(self.id);
+		ruleUser.rulebookMatchCallback(self.id);
 	}
 
 	// Called at preinit.
 	initializeRulebook() {
+		if(getRuleEngineFlag() == true)
+			return(nil);
+		setRuleEngineFlag();
+		_initializeRulebookLocation();
+		return(true);
+	}
+
+	_initializeRulebookLocation() {
 		if((location == nil) || !location.ofKind(RuleUser))
 			return;
 
 		location.addRulebook(self);
 
-		owner = location;
-
-		_initFlag = true;
+		ruleUser = location;
 	}
 ;
 
@@ -179,7 +185,7 @@ class Rulebook: Syslog
 class RulebookMatchAny: Rulebook
 	defaultState = nil
 
-	runCheck() {
+	runCheck(type?) {
 		local i;
 
 		if(ruleList == nil)
@@ -188,7 +194,7 @@ class RulebookMatchAny: Rulebook
 		// Go through the rule list and if any rules match,
 		// return the negation of the default state.
 		for(i = 1; i <= ruleList.length; i++)
-			if(ruleList[i].check() == true)
+			if(ruleList[i].check(type) == true)
 				return(!defaultState);
 
 		// None of the rules matched, return the default state.
@@ -207,6 +213,7 @@ class RulebookMatchNone: RulebookMatchAny
 	defaultState = true
 ;
 
+/*
 // A rulebook that "locks" the first time its state changes from the default.
 class RulebookPermanent: Rulebook
 	// Is the state locked?
@@ -241,7 +248,8 @@ class RulebookPermanent: Rulebook
 		locked = true;
 
 		// If we're owned by a 
-		if(owner != nil)
-			owner.disableRulebook(self);
+		if(ruleUser != nil)
+			ruleUser.disableRulebook(self);
 	}
 ;
+*/

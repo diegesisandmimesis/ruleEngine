@@ -1,6 +1,6 @@
 #charset "us-ascii"
 //
-// finalizeTest.t
+// mixedTriggerTest.t
 // Version 1.0
 // Copyright 2022 Diegesis & Mimesis
 //
@@ -8,7 +8,7 @@
 //
 // It can be compiled via the included makefile with
 //
-//	# t3make -f finalizeTest.t3m
+//	# t3make -f mixedTriggerTest.t3m
 //
 // ...or the equivalent, depending on what TADS development environment
 // you're using.
@@ -47,9 +47,12 @@ gameMain: GameMainDef
 		runGame(true);
 	}
 	showIntro() {
-		"This demo uses a <q>permanent</q> rulebook, which
-		should automatically remove itself from the rulebook
-		list after the first time its rules match.
+		"This demo that uses a trigger that matches when the
+		player takes the pebble or rock and then has the pebble in
+		their inventory.
+		<.p>
+		This is only useful as a test for mixing triggers and
+		non-trigger rules in the same rulebook.
 		<.p> ";
 	}
 ;
@@ -57,14 +60,19 @@ gameMain: GameMainDef
 startRoom: Room 'Void' "This is a featureless void. ";
 +me: Person;
 +pebble: Thing 'small round pebble' 'pebble' "A small, round pebble. ";
++rock: Thing 'ordinary rock' 'rock' "An ordinary rock. ";
 
-myController: RuleEngineOptimized;
+myController: RuleEngine;
 
 RuleUser
-	rulebookClass = RulebookPermanent
 	rulebookMatchAction(id) {
-		"<.p>All the rules matched on turn number
-		<<toString(libGlobal.totalTurns)>>.<.p> ";
+		"<.p>Rulebook <q><<toString(id)>></q> matched
+		on turn number <<toString(libGlobal.totalTurns)>>.<.p> ";
 	}
 ;
-+Trigger dstObject = pebble action = TakeAction;
+// A trigger demonstrating the use of lists in trigger properties.
++Trigger
+	dstObject = static [ pebble, rock ]
+	action = static [ TakeAction, DropAction ]
+;
++Rule matchRule(data?) { return(pebble.location == me); };

@@ -41,8 +41,8 @@
 #include "ruleEngine.h"
 
 // Generic rule class.
-class Rule: Syslog
-	syslogID = 'Rule'
+class Rule: RuleEngineObject
+	syslogID = ((id != nil) ? id : 'Rule')
 
 	// Is the rule active?  That is, should it be checked this turn?
 	active = true
@@ -56,13 +56,13 @@ class Rule: Syslog
 	// The rulebook we're in.
 	rulebook = nil
 
-	ruleEngine = nil
-
-	_initFlag = nil
-
 	// Called at preinit.
 	initializeRule() {
+		if(getRuleEngineFlag() == true)
+			return(nil);
+		setRuleEngineFlag();
 		_initializeRuleLocation();
+		return(true);
 	}
 
 	// Figure out which rulebook we belong to.
@@ -114,7 +114,10 @@ class Rule: Syslog
 	getState() { return(state == true); }
 
 	// Return the current state, updating it if necessary.
-	check(actor?, obj?, action?) {
+	check(type?) {
+		if((type != nil) && !ofKind(type))
+			return(nil);
+
 		// Check the timestamp, and re-check our condition(s)
 		// if they haven't been checked this turn.
 		if((gActionIsNested == true)

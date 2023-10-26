@@ -7,7 +7,9 @@
 
 #include "ruleEngine.h"
 
-class RuleUser: Syslog
+class RuleUser: RuleEngineObject
+	syslogID =  'RuleUser'
+
 	// Hash table of our rulebooks, keyed by rulebook ID.
 	rulebook = perInstance(new LookupTable())
 
@@ -27,10 +29,6 @@ class RuleUser: Syslog
 	// if one isn't declared in the rulebook definition.
 	_rulebookIdx = 0
 
-	// The RuleEngine that's managing us.
-	ruleEngine = ((_ruleEngine != nil) ? _ruleEngine : gRuleEngine)
-	_ruleEngine = nil
-
 	// Set by the rule engine
 	_initFlag = nil
 
@@ -44,13 +42,10 @@ class RuleUser: Syslog
 		if(obj.id == nil)
 			obj.id = (_rulebookIdx += 1);
 
-		obj.owner = self;
-
 		// Add it to our rulebook table.
 		rulebook[obj.id] = obj;
 
-		if(ruleEngine != nil)
-			ruleEngine.addRulebook(obj);
+		getRuleEngine().addRulebook(obj);
 
 		return(true);
 	}
@@ -59,7 +54,7 @@ class RuleUser: Syslog
 		if(obj == nil) return(nil);
 		if(rulebook[obj.id] == nil) return(nil);
 		rulebook[obj.id] = nil;
-		if(ruleEngine != nil) ruleEngine.removeRulebook(obj);
+		getRuleEngine().removeRulebook(obj);
 		return(true);
 	}
 
@@ -133,13 +128,12 @@ class RuleUser: Syslog
 		r.id = (id ? id : 'default');
 
 		// Make us the owner.
-		r.owner = self;
+		r.ruleUser = self;
 
 		// Add it to our rulebook table.
 		addRulebook(r);
 
-		if(ruleEngine != nil)
-			ruleEngine.addRulebook(r);
+		getRuleEngine().addRulebook(r);
 
 		return(r);
 	}
@@ -158,9 +152,6 @@ class RuleUser: Syslog
 		if((r = getRulebook()) == nil)
 			r = newRulebook();
 
-		if(ruleEngine != nil)
-			ruleEngine.addRule(obj);
-
 		// Add the rule.
 		return(r.addRule(obj));
 	}
@@ -168,9 +159,12 @@ class RuleUser: Syslog
 	removeRule(obj) {
 		local r;
 
-		if(obj == nil) return(nil);
-		if((r = getRulebook()) == nil) return(nil);
-		if(ruleEngine != nil) ruleEngine.removeRule(obj);
+		if(obj == nil)
+			return(nil);
+
+		if((r = getRulebook()) == nil)
+			return(nil);
+
 		return(r.removeRule(obj));
 	}
 
@@ -274,12 +268,12 @@ class RuleUser: Syslog
 
 	enableRuleUser() {
 		enableAllRulebooks();
-		return(ruleEngine && ruleEngine.addRuleUser(self));
+		return(getRuleEngine().addRuleUser(self));
 	}
 
 	disableRuleUser() {
 		disableAllRulebooks();
-		return(ruleEngine && ruleEngine.removeRuleUser(self));
+		return(getRuleEngine().removeRuleUser(self));
 	}
 
 
@@ -287,7 +281,12 @@ class RuleUser: Syslog
 	rulebookMatchAction(id) {}
 
 	// Called at prinit.  By default, do nothing.
-	initializeRuleUser() {}
+	initializeRuleUser() {
+		if(getRuleEngineFlag() == true)
+			return(nil);
+		setRuleEngineFlag();
+		return(true);
+	}
 
 	tryBeforeAction() {}
 	tryAfterAction() {}

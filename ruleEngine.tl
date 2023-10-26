@@ -1,6 +1,5 @@
 name: ruleEngine Library
 source: ruleEngine.t
-source: ruleEngineOptimized.t
 source: ruleEngineRule.t
 source: ruleEngineRulebook.t
 source: ruleEngineUser.t

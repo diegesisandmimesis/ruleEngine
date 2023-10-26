@@ -169,11 +169,17 @@ ruleEngineModuleID: ModuleID {
         listingOrder = 99
 }
 
+enum ruleEngineBeforeAction, ruleEngineAfterAction;
+
 // Base object class for everything in the module.
 // Just a hook for the debugging stuff.
 class RuleEngineObject: Syslog
 	syslogID = 'RuleEngineObject'
 	syslogFlag = 'ruleEngine'
+
+	ruleEngine = nil
+
+	_ruleEngineInitFlag = nil
 
 	construct(cfg?) {
 		if(cfg == nil) cfg = object {};
@@ -185,6 +191,13 @@ class RuleEngineObject: Syslog
 			self.(o) = cfg.(o);
 		});
 	}
+
+	getRuleEngine() {
+		return((ruleEngine != nil) ? ruleEngine : gRuleEngine);
+	}
+
+	getRuleEngineFlag() { return(_ruleEngineInitFlag == true); }
+	setRuleEngineFlag() { _ruleEngineInitFlag = true; }
 
 	// Test two args for equal-ish-ness.
 	// Returns boolean true if:
@@ -225,15 +238,12 @@ class RuleEngineObject: Syslog
 // The engine class.  It subscribes for notifications before and after
 // every action, as well as running a daemon to be polled every turn
 // after action resolution.
-class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
+class RuleEngine: RuleEngineObject, BeforeAfterThing, PreinitObject
 	syslogID = 'RuleEngine'
 	syslogFlag = 'RuleEngine'
 
 	// List of all the Rulebook instances.
 	_rulebookList = perInstance(new Vector())
-
-	// List of all the Rule instances.
-	_ruleList = perInstance(new Vector())
 
 	// List of all RuleUser instances we need to update.
 	_ruleUserList = perInstance(new Vector())
@@ -254,25 +264,26 @@ class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
 
 	// Initialize all Rule instances and add them to our list.
 	initRules() {
+		local i;
+
+		i = 0;
 		forEachInstance(Rule, function(o) {
-			if(o._initFlag == true)
+			if(o.initializeRule() != true)
 				return;
-			addRule(o);
-			o.initializeRule();
-			o._ruleEngine = self;
+			o.ruleEngine = self;
+			i += 1;
 		});
-		_syslog('initialized <<toString(_ruleList.length)>> rules');
+		_syslog('initialized <<toString(i)>> rules');
 	}
 
 	// Initialize all Rulebook instances and add them to our list.
 	initRulebooks() {
 		forEachInstance(Rulebook, function(o) {
-			if(o._initFlag == true)
+			if(o.initializeRulebook() != true)
 				return;
 			if(addRulebook(o) != true)
 				return;
-			o.initializeRulebook();
-			o._ruleEngine = self;
+			o.ruleEngine = self;
 		});
 		_syslog('initialized <<toString(_rulebookList.length)>>
 			rulebooks');
@@ -281,12 +292,11 @@ class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
 	// Initialize all Rulebook instances and add them to our list.
 	initRuleUsers() {
 		forEachInstance(RuleUser, function(o) {
-			if(o._initFlag == true)
+			if(o.initializeRuleUser() != true)
 				return;
 			if(addRuleUser(o) != true)
 				return;
-			o._ruleEngine = self;
-			o.initializeRuleUser();
+			o.ruleEngine = self;
 		});
 	}
 
@@ -295,6 +305,7 @@ class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
 		_ruleDaemon = new Daemon(self, &updateRuleEngine, 1);
 	}
 
+/*
 	addRule(obj) {
 		if((obj == nil) || !obj.ofKind(Rule))
 			return(nil);
@@ -326,6 +337,7 @@ class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
 
 		return(true);
 	}
+*/
 
 	addRulebook(obj) {
 		if((obj == nil) || !obj.ofKind(Rulebook))
@@ -368,6 +380,8 @@ class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
 
 		obj._initFlag = true;
 
+		_debug('addRuleUser():  <<toString(_ruleUserList.length)>>');
+
 		return(true);
 	}
 
@@ -380,17 +394,20 @@ class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
 
 		_ruleUserList.removeElement(obj);
 
+		_debug('removeRuleUser():  <<toString(_ruleUserList.length)>>');
+
 		return(true);
 	}
 
 	// Called every turn in the beforeAction() window.
 	globalBeforeAction() {
-		_turnSetup();
+		_rulebookBeforeAction();
 		_ruleUserBeforeAction();
 	}
 
 	// Called every turn in the afterAction() window.
 	globalAfterAction() {
+		_rulebookAfterAction();
 		_ruleUserAfterAction();
 	}
 
@@ -399,31 +416,19 @@ class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
 		_ruleUserAction();
 	}
 
-	_turnSetup() {
-		_checkRuleMatches();
-		_updateRulebooks();
+	_rulebookBeforeAction() {
+		_updateRulebooks(ruleEngineBeforeAction);
 	}
 
-	// Poll all the rules, finding out which ones match this turn.
-	_checkRuleMatches() {
-		local i;
-
-		i = 0;
-		_ruleList.forEach(function(o) {
-			if(o.check(gActor, gDobj, gAction) == true)
-				i += 1;
-		});
-
-		_debug('rule matches, turn <<toString(libGlobal.totalTurns)>>:
-			<<toString(i)>> of <<toString(_ruleList.length)>>',
-			'ruleEngineMatches');
+	_rulebookAfterAction() {
+		_updateRulebooks(ruleEngineAfterAction);
 	}
 
-	_updateRulebooks() {
+	_updateRulebooks(type?) {
 		_syslog('_updateRulebooks: evaluating
 			<<toString(_rulebookList.length)>> rulebooks');
 		_rulebookList.forEach(function(o) {
-			if(o.check() == true)
+			if(o.tryCheck(type) == true)
 				o.tryCallback();
 		});
 	}

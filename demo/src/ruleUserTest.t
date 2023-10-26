@@ -63,7 +63,7 @@ startRoom: Room 'Void' "This is a featureless void. ";
 +me: Person;
 
 // Declare a RuleEngine instance.
-myController: RuleEngine;
+RuleEngine;
 
 // Declare a RuleUser instance.
 // Normally this would be a mixin for something else (like a Scene),

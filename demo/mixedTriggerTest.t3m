@@ -2,11 +2,12 @@
 -D MESSAGESTYLE=neu
 -Fy obj -Fo obj
 -Fs ../..
--o games/optimizedTest.t3
+-o games/mixedTriggerTest.t3
 -lib system
 -lib adv3/adv3
 -lib syslog/syslog
 -lib senseGrep/senseGrep
 -lib beforeAfter/beforeAfter
 -lib ../ruleEngine
--source src/optimizedTest.t
+-source reflect.t
+-source src/mixedTriggerTest.t
