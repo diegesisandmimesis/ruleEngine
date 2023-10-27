@@ -12,7 +12,7 @@
 // the rules in the rulebook are matched (that is, their individual
 // check() methods will all return true).
 class Rulebook: RuleEngineObject
-	syslogID = id
+	syslogID = 'Rulebook'
 
 	// Unique ID for this rulebook
 	id = nil

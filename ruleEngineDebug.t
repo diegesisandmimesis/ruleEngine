@@ -89,6 +89,16 @@ modify RuleEngine
 	}
 ;
 
+modify Rulebook
+	addRule(obj) {
+		local r = inherited(obj);
+		if(r == true)
+			_debug('addRule() success', 'rule');
+		else
+			_debug('addRule() failed', 'rule');
+	}
+;
+
 modify RuleUser
 	rulebookMatched(id) {
 		_debug('rulebook <q><<toString(id)>></q> matched', 'rulebook');
