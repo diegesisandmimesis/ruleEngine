@@ -257,9 +257,6 @@ class RuleEngine: RuleEngineObject, BeforeAfterThing, PreinitObject
 		initRulebooks();
 		initRuleUsers();
 		initRuleEngineDaemon();
-
-		_debug('rulebooks:  <<toString(_rulebookList.length)>>');
-		_debug('rule users:  <<toString(_ruleUserList.length)>>');
 	}
 
 	// Initialize all Rule instances and add them to our list.
@@ -273,7 +270,8 @@ class RuleEngine: RuleEngineObject, BeforeAfterThing, PreinitObject
 			o.ruleEngine = self;
 			i += 1;
 		});
-		_syslog('initialized <<toString(i)>> rules');
+
+		return(i);
 	}
 
 	// Initialize all Rulebook instances and add them to our list.
@@ -285,8 +283,6 @@ class RuleEngine: RuleEngineObject, BeforeAfterThing, PreinitObject
 				return;
 			o.ruleEngine = self;
 		});
-		_syslog('initialized <<toString(_rulebookList.length)>>
-			rulebooks');
 	}
 
 	// Initialize all Rulebook instances and add them to our list.
@@ -350,8 +346,6 @@ class RuleEngine: RuleEngineObject, BeforeAfterThing, PreinitObject
 
 		obj._initFlag = true;
 
-		_debug('addRulebook():  <<toString(_rulebookList.length)>>');
-
 		return(true);
 	}
 
@@ -363,8 +357,6 @@ class RuleEngine: RuleEngineObject, BeforeAfterThing, PreinitObject
 			return(nil);
 
 		_rulebookList.removeElement(obj);
-
-		_debug('removeRulebook():  <<toString(_rulebookList.length)>>');
 
 		return(true);
 	}
@@ -380,8 +372,6 @@ class RuleEngine: RuleEngineObject, BeforeAfterThing, PreinitObject
 
 		obj._initFlag = true;
 
-		_debug('addRuleUser():  <<toString(_ruleUserList.length)>>');
-
 		return(true);
 	}
 
@@ -393,8 +383,6 @@ class RuleEngine: RuleEngineObject, BeforeAfterThing, PreinitObject
 			return(nil);
 
 		_ruleUserList.removeElement(obj);
-
-		_debug('removeRuleUser():  <<toString(_ruleUserList.length)>>');
 
 		return(true);
 	}
@@ -425,8 +413,6 @@ class RuleEngine: RuleEngineObject, BeforeAfterThing, PreinitObject
 	}
 
 	_updateRulebooks(type?) {
-		_syslog('_updateRulebooks: evaluating
-			<<toString(_rulebookList.length)>> rulebooks');
 		_rulebookList.forEach(function(o) {
 			if(o.tryCheck(type) == true)
 				o.tryCallback();
@@ -434,20 +420,14 @@ class RuleEngine: RuleEngineObject, BeforeAfterThing, PreinitObject
 	}
 
 	_ruleUserBeforeAction() {
-		_syslog('_ruleUserBeforeAction: evaluating
-			<<toString(_ruleUserList.length)>> rule users');
 		_ruleUserList.forEach(function(o) { o.tryBeforeAction(); });
 	}
 
 	_ruleUserAfterAction() {
-		_syslog('_ruleUserAfterAction: evaluating
-			<<toString(_ruleUserList.length)>> rule users');
 		_ruleUserList.forEach(function(o) { o.tryAfterAction(); });
 	}
 
 	_ruleUserAction() {
-		_syslog('_ruleUserAction: evaluating
-			<<toString(_ruleUserList.length)>> rule users');
 		_ruleUserList.forEach(function(o) { o.tryAction(); });
 	}
 ;

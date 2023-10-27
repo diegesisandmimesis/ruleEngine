@@ -203,8 +203,6 @@ class RuleUser: RuleEngineObject
 		if(id == nil)
 			return;
 
-		_debug('rulebook <q><<toString(id)>></q> matched');
-
 		// Note that the rulebook who called us matched this
 		// turn.
 		rulebookMatches[id] = libGlobal.totalTurns;
