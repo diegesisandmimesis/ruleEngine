@@ -53,7 +53,7 @@ class RuleUser: RuleEngineObject
 	removeRulebook(obj) {
 		if(obj == nil) return(nil);
 		if(rulebook[obj.id] == nil) return(nil);
-		rulebook[obj.id] = nil;
+		rulebook.removeElement(obj.id);
 		getRuleEngine().removeRulebook(obj);
 		return(true);
 	}
@@ -70,7 +70,7 @@ class RuleUser: RuleEngineObject
 
 	enableRulebook(obj) {
 		if(obj == nil) return(nil);
-		disabledRulebook.removeElement(obj);
+		disabledRulebook.removeElement(obj.id);
 		return(addRulebook(obj));
 	}
 
