@@ -61,17 +61,18 @@ startRoom: Room 'Void' "This is a featureless void. ";
 +me: Person;
 
 // Declare a RuleEngine instance.
-myController: RuleEngine;
+RuleEngine;
++RuleSystem;
 
 // An anonymous rulebook.  The default Rulebook class matches when
 // all its rules match.  One rule matches odd turns and the other matches
 // turn numbers greater than two.  The rulebook will therefore match
 // turn three and every other turn thereafter.
-Rulebook
+++Rulebook
 	callback() {
 		"<.p>All the rules in the rulebook matched on turn
 		<<toString(libGlobal.totalTurns)>>.<.p> ";
 	}
 ;
-+Rule matchRule(data?) { return(libGlobal.totalTurns > 2); };
++++Rule matchRule(data?) { return(libGlobal.totalTurns > 2); };
 +Rule matchRule(data?) { return((libGlobal.totalTurns % 2) != 0); };

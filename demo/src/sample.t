@@ -59,17 +59,17 @@ startRoom: Room 'Void' "This is a featureless void. ";
 +me: Person;
 
 // Declare a RuleEngine instance.
-myController: RuleEngine;
-
+RuleEngine;
++RuleSystem;
 // Declare a rulebook.
 // Normally we're place rulebooks "inside" some other object via the +Rulebook
 // syntax, but here we're just testing the bare minimum rulebook functionality,
 // so can get away with using an anonymous Rulebook instance.
-Rulebook 'myRulebook'
+++Rulebook 'myRulebook'
 	callback() {
 		"<.p>All the rules in the rulebook matched on turn
 		<<toString(libGlobal.totalTurns)>>.<.p> ";
 	}
 ;
 // One rule, is boolean true only on turn two.
-+Rule 'myRule' matchRule(data?) { return(libGlobal.totalTurns == 2); };
++++Rule 'myRule' matchRule(data?) { return(libGlobal.totalTurns == 2); };

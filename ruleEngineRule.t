@@ -58,9 +58,6 @@ class Rule: RuleEngineObject
 
 	// Called at preinit.
 	initializeRule() {
-		if(getRuleEngineFlag() == true)
-			return(nil);
-		setRuleEngineFlag();
 		_initializeRuleLocation();
 		return(true);
 	}
@@ -70,7 +67,7 @@ class Rule: RuleEngineObject
 		if(location == nil)
 			return;
 
-		if(!location.ofKind(Rulebook) && !location.ofKind(RuleUser))
+		if(!location.ofKind(Rulebook) && !location.ofKind(RuleSystem))
 			return;
 
 		// Add ourselves to our parent's rule list.

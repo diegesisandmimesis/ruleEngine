@@ -61,14 +61,14 @@ startRoom: Room 'Void' "This is a featureless void. ";
 +me: Person;
 
 // Declare a RuleEngine instance.
-myController: RuleEngine;
-
+RuleEngine;
++RuleSystem;
 // An anonymous rulebook that matches when all its rules match.
-RulebookMatchAll
+++RulebookMatchAll
 	callback() {
 		"<.p>All the rules in the rulebook matched on turn
 		<<toString(libGlobal.totalTurns)>>.<.p> ";
 	}
 ;
-+Rule matchRule(data?) { return((libGlobal.totalTurns % 2) == 0); };
-+Rule matchRule(data?) { return((libGlobal.totalTurns % 2) != 0); };
++++Rule matchRule(data?) { return((libGlobal.totalTurns % 2) == 0); };
++++Rule matchRule(data?) { return((libGlobal.totalTurns % 2) != 0); };

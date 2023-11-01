@@ -57,16 +57,15 @@ startRoom: Room 'Void' "This is a featureless void. ";
 +me: Person;
 +pebble: Thing 'small round pebble' 'pebble' "A small, round pebble. ";
 
-myController: RuleEngine;
-
-RuleUser
+RuleEngine;
++RuleSystem
 	rulebookMatchAction(id) {
 		"<.p>Rulebook <q><<toString(id)>></q> matched
 		on turn number <<toString(libGlobal.totalTurns)>>.<.p> ";
 	}
 ;
 // A simple trigger that matches >TAKE PEBBLE
-+Trigger
+++Trigger
 	dstObject = pebble
 	action = TakeAction
 ;

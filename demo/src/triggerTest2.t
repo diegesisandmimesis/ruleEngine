@@ -58,16 +58,15 @@ startRoom: Room 'Void' "This is a featureless void. ";
 +pebble: Thing 'small round pebble' 'pebble' "A small, round pebble. ";
 +rock: Thing 'ordinary rock' 'rock' "An ordinary rock. ";
 
-myController: RuleEngine;
-
-RuleUser
+RuleEngine;
++RuleSystem
 	rulebookMatchAction(id) {
 		"<.p>Rulebook <q><<toString(id)>></q> matched
 		on turn number <<toString(libGlobal.totalTurns)>>.<.p> ";
 	}
 ;
 // A trigger demonstrating the use of lists in trigger properties.
-+Trigger
+++Trigger
 	dstObject = static [ pebble, rock ]
 	action = static [ TakeAction, DropAction ]
 ;

@@ -65,9 +65,6 @@ gameMain: GameMainDef
 startRoom: Room 'Void' "This is a featureless void. ";
 +me: Person;
 
-// Declare a RuleEngine instance.
-myController: RuleEngine;
-
 // Class for both our rulebooks.  The base class, RulebookMatchNone,
 // matches when none of its rules are matched.
 // We define a class just so we don't have to duplicate the callback in
@@ -79,20 +76,22 @@ class DemoRulebook: RulebookMatchNone
 	}
 ;
 
+// Declare a RuleEngine instance.
+RuleEngine;
++RuleSystem;
 // A rulebook "foo" with two rules:  one that matches even turns, one
 // that matches odd turns.  One of the two will match every turn, which
 // means the rulebook, that only matches when none of the rules match,
 // will never match.
-DemoRulebook 'foo';
-+Rule matchRule(data?) { return((libGlobal.totalTurns % 2) == 0); };
-+Rule matchRule(data?) { return((libGlobal.totalTurns % 2) != 0); };
-
+++DemoRulebook 'foo';
++++Rule matchRule(data?) { return((libGlobal.totalTurns % 2) == 0); };
++++Rule matchRule(data?) { return((libGlobal.totalTurns % 2) != 0); };
 // A rulebook "bar" with four rules:  each one matches a single turn
 // between turn zero and three.  With a rulebook that matches when none
 // of the rules match, this will not match on turns zero through three,
 // then match every turn thereafter.
-DemoRulebook 'bar';
-+Rule matchRule(data?) { return(libGlobal.totalTurns == 0); };
-+Rule matchRule(data?) { return(libGlobal.totalTurns == 1); };
-+Rule matchRule(data?) { return(libGlobal.totalTurns == 2); };
-+Rule matchRule(data?) { return(libGlobal.totalTurns == 3); };
+++DemoRulebook 'bar';
++++Rule matchRule(data?) { return(libGlobal.totalTurns == 0); };
++++Rule matchRule(data?) { return(libGlobal.totalTurns == 1); };
++++Rule matchRule(data?) { return(libGlobal.totalTurns == 2); };
++++Rule matchRule(data?) { return(libGlobal.totalTurns == 3); };

@@ -39,8 +39,8 @@ class Rulebook: RuleEngineObject
 	// Flag to indicate rule list has been updated.
 	_ruleListDirty = nil
 
-	// RuleUser that owns this rulebook, if any.
-	ruleUser = nil
+	// RuleSystem that owns this rulebook, if any.
+	ruleSystem = nil
 
 	// Getter and setter for the active property.
 	isActive() { return(active == true); }
@@ -73,9 +73,6 @@ class Rulebook: RuleEngineObject
 		// Actually add the rule.
 		ruleList.append(obj);
 
-		if(ruleEngine != nil)
-			ruleEngine.addRule(obj);
-
 		// Mark the rule list as updated.
 		_ruleListDirty = true;
 
@@ -91,9 +88,6 @@ class Rulebook: RuleEngineObject
 		// Remove the rule.
 		ruleList.removeElement(obj);
 
-		if(ruleEngine != nil)
-			ruleEngine.removeRule(obj);
-
 		// Make the rule list as updated.
 		_ruleListDirty = true;
 
@@ -107,7 +101,7 @@ class Rulebook: RuleEngineObject
 		return(check());
 	}
 
-	// Method called by RuleUser.
+	// Method called by RuleSystem.
 	// Returns the current state, computing it if it hasn't been
 	// already computed this turn.
 	check() {
@@ -154,29 +148,26 @@ class Rulebook: RuleEngineObject
 		callback();
 	}
 
-	// By default, the callback notifies the rulebook's ruleUser.
+	// By default, the callback notifies the rulebook's ruleSystem.
 	callback() {
-		if(ruleUser == nil)
+		if(ruleSystem == nil)
 			return;
-		ruleUser.rulebookMatchCallback(self.id);
+		ruleSystem.rulebookMatchCallback(self.id);
 	}
 
 	// Called at preinit.
 	initializeRulebook() {
-		if(getRuleEngineFlag() == true)
-			return(nil);
-		setRuleEngineFlag();
 		_initializeRulebookLocation();
 		return(true);
 	}
 
 	_initializeRulebookLocation() {
-		if((location == nil) || !location.ofKind(RuleUser))
+		if((location == nil) || !location.ofKind(RuleSystem))
 			return;
 
 		location.addRulebook(self);
 
-		ruleUser = location;
+		ruleSystem = location;
 	}
 ;
 
@@ -212,44 +203,3 @@ class RulebookMatchAll: Rulebook;
 class RulebookMatchNone: RulebookMatchAny
 	defaultState = true
 ;
-
-/*
-// A rulebook that "locks" the first time its state changes from the default.
-class RulebookPermanent: Rulebook
-	// Is the state locked?
-	locked = nil
-
-	// Updated check() method.
-	check() {
-		local v;
-
-		// If the state is locked, we just return the existing state.
-		if(locked == true)
-			return(getState());
-
-		// We're not locked, so we check the current state, using
-		// the inherited check() logic.
-		// If the current state is the default state, we just return
-		// it.
-		if((v = inherited()) == defaultState)
-			return(v);
-
-		// If we reach here, the current state is no longer the
-		// default state, so we lock the state.
-		lockState();
-
-		// Return the state (which will always be !defaultState).
-		return(v);
-	}
-
-	// Finialize our state.
-	lockState() {
-		// Set the locked flag.
-		locked = true;
-
-		// If we're owned by a 
-		if(ruleUser != nil)
-			ruleUser.disableRulebook(self);
-	}
-;
-*/
