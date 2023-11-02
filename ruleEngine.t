@@ -14,16 +14,14 @@ class RuleEngine: RuleEngineBase, RuleEngineDaemon, BeforeAfterThing, PreinitObj
 	syslogID = 'RuleEngine'
 
 	// Called at preinit.
-	execute() {
-		initRuleEngineDaemon();
-	}
+	execute() { initRuleEngineDaemon(); }
 
 	// Called every turn in the beforeAction() window.
-	globalBeforeAction() { _ruleSystemBeforeAction(); }
+	globalBeforeAction() { ruleEngineBeforeAction(); }
 
 	// Called every turn in the afterAction() window.
-	globalAfterAction() { _ruleSystemAfterAction(); }
+	globalAfterAction() { ruleEngineAfterAction(); }
 
 	// Called every turn by our daemon, after action resolution.
-	updateRuleEngine() { _ruleSystemAction(); }
+	updateRuleEngine() { ruleEngineAction(); }
 ;

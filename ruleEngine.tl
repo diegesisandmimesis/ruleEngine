@@ -4,6 +4,7 @@ source: ruleEngineObject.t
 source: ruleEngineBase.t
 source: ruleEngine.t
 source: ruleEngineLocation.t
+source: ruleEngineThing.t
 source: ruleEngineDaemon.t
 source: ruleEngineRule.t
 source: ruleEngineRulebook.t

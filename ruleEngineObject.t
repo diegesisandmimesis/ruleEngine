@@ -7,7 +7,7 @@
 
 #include "ruleEngine.h"
 
-enum ruleEngineBeforeAction, ruleEngineAfterAction;
+enum eRuleBeforeAction, eRuleAfterAction;
 
 // Base object class for everything in the module.
 // Just a hook for the debugging stuff.

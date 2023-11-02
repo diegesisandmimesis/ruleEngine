@@ -38,19 +38,19 @@ class RuleEngineBase: RuleEngineObject, BeforeAfterThing, PreinitObject
 		return(true);
 	}
 
-	_ruleSystemBeforeAction() {
+	ruleEngineBeforeAction() {
 		_ruleSystemList.forEach(function(o) {
 			o.ruleSystemBeforeAction();
 		});
 	}
 
-	_ruleSystemAfterAction() {
+	ruleEngineAfterAction() {
 		_ruleSystemList.forEach(function(o) {
 			o.ruleSystemAfterAction();
 		});
 	}
 
-	_ruleSystemAction() {
+	ruleEngineAction() {
 		_ruleSystemList.forEach(function(o) { o.ruleSystemAction(); });
 	}
 ;

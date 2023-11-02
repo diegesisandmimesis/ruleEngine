@@ -12,16 +12,16 @@ class RuleEngineRoom: Room, RuleEngineBase
 
 	roomBeforeAction() {
 		inherited();
-		_ruleSystemBeforeAction();
+		ruleEngineBeforeAction();
 	}
 
 	roomAfterAction() {
 		inherited();
-		_ruleSystemAfterAction();
+		ruleEngineAfterAction();
 	}
 
 	roomDaemon() {
 		inherited();
-		_ruleSystemAction();
+		ruleEngineAction();
 	}
 ;

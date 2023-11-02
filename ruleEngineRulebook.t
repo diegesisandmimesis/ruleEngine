@@ -95,7 +95,7 @@ class Rulebook: RuleEngineObject
 	}
 
 	tryCheck(type?) {
-		if(type == ruleEngineBeforeAction)
+		if(type == eRuleBeforeAction)
 			return(runCheck(Trigger) != defaultState);
 
 		return(check());

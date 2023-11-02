@@ -308,8 +308,8 @@ class RuleSystem: RuleEngineObject
 		});
 	}
 
-	_rulebookBeforeAction() { _updateRulebooks(ruleEngineBeforeAction); }
-	_rulebookAfterAction() { _updateRulebooks(ruleEngineAfterAction); }
+	_rulebookBeforeAction() { _updateRulebooks(eRuleBeforeAction); }
+	_rulebookAfterAction() { _updateRulebooks(eRuleAfterAction); }
 
 	ruleSystemBeforeAction() {
 		_rulebookBeforeAction();

@@ -14,12 +14,12 @@ class RuleEngineThing: Thing, RuleEngineBase
 
 	beforeAction() {
 		inherited();
-		_ruleSystemBeforeAction();
+		ruleEngineBeforeAction();
 	}
 
 	afterAction() {
 		inherited();
-		_ruleSystemAfterAction();
+		ruleEngineAfterAction();
 	}
 
 	initializeThing() {
@@ -29,6 +29,6 @@ class RuleEngineThing: Thing, RuleEngineBase
 
 	updateRuleEngine() {
 		inherited();
-		_ruleSystemAction();
+		ruleEngineAction();
 	}
 ;
