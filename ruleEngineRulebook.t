@@ -162,8 +162,10 @@ class Rulebook: RuleEngineObject
 	}
 
 	_initializeRulebookLocation() {
-		if((location == nil) || !location.ofKind(RuleSystem))
+		if((location == nil) || !location.ofKind(RuleSystem)) {
+			_error('orphaned rulebook');
 			return;
+		}
 
 		location.addRulebook(self);
 

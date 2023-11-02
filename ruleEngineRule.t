@@ -67,8 +67,10 @@ class Rule: RuleEngineObject
 		if(location == nil)
 			return;
 
-		if(!location.ofKind(Rulebook) && !location.ofKind(RuleSystem))
+		if(!location.ofKind(Rulebook) && !location.ofKind(RuleSystem)) {
+			_error('orphaned rule');
 			return;
+		}
 
 		// Add ourselves to our parent's rule list.
 		location.addRule(self);

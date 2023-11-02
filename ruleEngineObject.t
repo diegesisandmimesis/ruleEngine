@@ -17,8 +17,6 @@ class RuleEngineObject: Syslog
 
 	ruleEngine = nil
 
-	//_ruleEngineInitFlag = nil
-
 	construct(cfg?) {
 		if(cfg == nil) cfg = object {};
 		cfg.getPropList().forEach(function(o) {
@@ -29,11 +27,6 @@ class RuleEngineObject: Syslog
 			self.(o) = cfg.(o);
 		});
 	}
-
-/*
-	getRuleEngineFlag() { return(_ruleEngineInitFlag == true); }
-	setRuleEngineFlag() { _ruleEngineInitFlag = true; }
-*/
 
 	// Test two args for equal-ish-ness.
 	// Returns boolean true if:

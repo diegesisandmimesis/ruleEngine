@@ -24,6 +24,9 @@
 
 DefineSystemAction(DebugRuleEngine)
 	execSystemAction() {
+		forEachInstance(RuleEngineBase, function(o) {
+		});
+		"\nDone. ";
 	}
 ;
 VerbRule(DebugRuleEngine)

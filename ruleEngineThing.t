@@ -7,7 +7,7 @@
 
 #include "ruleEngine.h"
 
-class RuleEngineThing: Thing, RuleEngineBase
+class RuleEngineThing: Thing, RuleEngineBase, RuleEngineDaemon
 	syslogID = 'RuleEngineRoom'
 
 	_ruleEngineDaemon = nil

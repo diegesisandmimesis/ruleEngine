@@ -285,18 +285,15 @@ class RuleSystem: RuleEngineObject
 
 	// Called at prinit.  By default, do nothing.
 	initializeRuleSystem() {
-/*
-		if(getRuleEngineFlag() == true)
-			return(nil);
-		setRuleEngineFlag();
-*/
 		_initializeRuleSystemLocation();
 		return(true);
 	}
 
 	_initializeRuleSystemLocation() {
-		if((location == nil) || !location.ofKind(RuleEngine))
+		if((location == nil) || !location.ofKind(RuleEngineBase)) {
+			_error('orphaned rule system');
 			return(nil);
+		}
 		location.addRuleSystem(self);
 		return(true);
 	}
