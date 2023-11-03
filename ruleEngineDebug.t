@@ -105,7 +105,7 @@ DefineSystemAction(DebugRuleEngine)
 	}
 ;
 VerbRule(DebugRuleEngine)
-	'debugruleengine' : DebugRuleEngineAction
+	'debugruleengines' : DebugRuleEngineAction
 	verbPhrase = 'debug/debugging'
 ;
 
