@@ -15,6 +15,7 @@ ruleEnginePreinit: PreinitObject
 		initRules();
 		initRulebooks();
 		initRuleSystems();
+		initRuleEngines();
 	}
 
 	// Initialize all Rule instances and add them to our list.
@@ -38,4 +39,9 @@ ruleEnginePreinit: PreinitObject
 		});
 	}
 
+	initRuleEngines() {
+		forEachInstance(RuleEngine, function(o) {
+			o.initializeRuleEngine();
+		});
+	}
 ;

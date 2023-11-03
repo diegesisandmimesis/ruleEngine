@@ -97,7 +97,7 @@ ruleEngineDebugger: PreinitObject
 
 DefineSystemAction(DebugRuleEngine)
 	execSystemAction() {
-		forEachInstance(RuleEngineBase, function(o) {
+		forEachInstance(RuleEngine, function(o) {
 		});
 		"<.p> ";
 		ruleEngineDebugger.log();

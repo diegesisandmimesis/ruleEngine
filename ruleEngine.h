@@ -39,6 +39,6 @@
 Rulebook template 'id'? +priority?;
 Rule template 'id'?;
 
-#define gRuleEngine (ruleEngineLinter._engine)
+#define gRuleScheduler globalRuleScheduler
 
 #define RULE_ENGINE_H

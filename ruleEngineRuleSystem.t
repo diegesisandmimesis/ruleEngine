@@ -290,7 +290,7 @@ class RuleSystem: RuleEngineObject
 	}
 
 	_initializeRuleSystemLocation() {
-		if((location == nil) || !location.ofKind(RuleEngineBase)) {
+		if((location == nil) || !location.ofKind(RuleEngine)) {
 			_error('orphaned rule system');
 			return(nil);
 		}
