@@ -41,6 +41,8 @@ class RuleSystem: RuleEngineObject
 		// Add it to our rulebook table.
 		rulebook[obj.id] = obj;
 
+		obj.ruleSystem = self;
+
 		if(ruleEngine != nil)
 			ruleEngine.addRulebook(obj);
 

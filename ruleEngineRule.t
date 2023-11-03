@@ -62,20 +62,21 @@ class Rule: RuleEngineObject
 		return(true);
 	}
 
+	_tryRulebook(obj) {
+		if(obj == nil)
+			return(nil);
+		if(!obj.ofKind(Rulebook) && !obj.ofKind(RuleSystem))
+			return(nil);
+		return(obj.addRule(self));
+	}
+
 	// Figure out which rulebook we belong to.
 	_initializeRuleLocation() {
-		if(location == nil)
+		if(_tryRulebook(rulebook) == true)
 			return;
-
-		if(!location.ofKind(Rulebook) && !location.ofKind(RuleSystem)) {
-			_error('orphaned rule');
+		if(_tryRulebook(location) == true)
 			return;
-		}
-
-		// Add ourselves to our parent's rule list.
-		location.addRule(self);
-
-		rulebook = location;
+		_error('orphaned rule');
 	}
 
 	// Getter and setter for the active flag.

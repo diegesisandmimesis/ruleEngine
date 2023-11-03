@@ -73,6 +73,8 @@ class Rulebook: RuleEngineObject
 		// Actually add the rule.
 		ruleList.append(obj);
 
+		obj.rulebook = self;
+
 		// Mark the rule list as updated.
 		_ruleListDirty = true;
 
@@ -161,15 +163,18 @@ class Rulebook: RuleEngineObject
 		return(true);
 	}
 
+	_tryRuleSystem(obj) {
+		if((obj == nil) || !obj.ofKind(RuleSystem))
+			return(nil);
+		return(obj.addRulebook(self));
+	}
+
 	_initializeRulebookLocation() {
-		if((location == nil) || !location.ofKind(RuleSystem)) {
-			_error('orphaned rulebook');
+		if(_tryRuleSystem(ruleSystem) == true)
 			return;
-		}
-
-		location.addRulebook(self);
-
-		ruleSystem = location;
+		if(_tryRuleSystem(location) == true)
+			return;
+		_error('orphaned rulebook');
 	}
 ;
 
