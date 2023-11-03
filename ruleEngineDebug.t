@@ -22,11 +22,86 @@
 
 #ifdef SYSLOG
 
+class RuleEngineRRD: object
+	ruleCheck = 0
+	ruleFire = 0
+	rulebookCheck = 0
+	rulebookFire = 0
+	rulesystemCheck = 0
+	rulesystemFire = 0
+;
+
+ruleEngineDebugger: PreinitObject
+	_rrd = perInstance(new LookupTable())
+	_daemon = nil
+
+	execute() { _daemon = new Daemon(self, &update, 1); }
+
+	idx() { return(libGlobal.totalTurns); }
+	_add(id, amt?) {
+		local i, obj;
+
+		i = idx();
+		if((obj = _rrd[i]) == nil) {
+			obj = new RuleEngineRRD();
+			_rrd[i] = obj;
+		}
+		obj.(id) += ((amt == nil) ? 1 : amt);
+	}
+
+	checkRule(amt?) { _add(&ruleCheck, amt); }
+	fireRule(amt?) { _add(&ruleFire, amt); }
+
+	checkRulebook(amt?) { _add(&rulebookCheck, amt); }
+	fireRulebook(amt?) { _add(&rulebookFire, amt); }
+
+	checkRuleSystem(amt?) { _add(&rulesystemCheck, amt); }
+	fireRuleSystem(amt?) { _add(&rulesystemFire, amt); }
+
+	update() {
+		local i;
+
+		i = idx() - 10;
+		if(_rrd.isKeyPresent(i))
+			_rrd.removeElement(i);
+
+		checkRule(0);
+		fireRule(0);
+		checkRulebook(0);
+		fireRulebook(0);
+		checkRuleSystem(0);
+		fireRuleSystem(0);
+	}
+	log() {
+		local l, obj;
+
+		if(idx() == 0) {
+			"\nNo debugging data yet, still turn zero.\n ";
+			return;
+		}
+		l = _rrd.keysToList().sort();
+		"\nRule engine history (values are checks : matches):\n ";
+		"<.p> ";
+		l.forEach(function(o) {
+			obj = _rrd[o];
+			"\n\tTurn <<o>>:\n ";
+			"\n\t\trule = <<toString(obj.ruleCheck)>> :
+				<<toString(obj.ruleFire)>>\n ";
+			"\n\t\trulebook = <<toString(obj.rulebookCheck)>> :
+				<<toString(obj.rulebookFire)>>\n ";
+			"\n\t\trulesystem = <<toString(obj.rulesystemCheck)>> :
+				<<toString(obj.rulesystemFire)>>\n ";
+		});
+	}
+;
+
 DefineSystemAction(DebugRuleEngine)
 	execSystemAction() {
 		forEachInstance(RuleEngineBase, function(o) {
 		});
-		"\nDone. ";
+		"<.p> ";
+		ruleEngineDebugger.log();
+		"<.p>Done. ";
 	}
 ;
 VerbRule(DebugRuleEngine)
@@ -54,7 +129,27 @@ modify RuleEngine
 	}
 ;
 
+modify Rule
+	check(type?) {
+		ruleEngineDebugger.checkRule();
+		return(inherited(type));
+	}
+	setState(v?) {
+		local r = inherited(v);
+		if(r) ruleEngineDebugger.fireRule();
+		return(r);
+	}
+;
+
 modify Rulebook
+	check() {
+		ruleEngineDebugger.checkRulebook();
+		return(inherited());
+	}
+	callback() {
+		ruleEngineDebugger.fireRulebook();
+		inherited();
+	}
 	addRule(obj) {
 		local r = inherited(obj);
 		if(r == true)
@@ -65,8 +160,13 @@ modify Rulebook
 ;
 
 modify RuleSystem
+	ruleSystemBeforeAction() {
+		ruleEngineDebugger.checkRuleSystem();
+		inherited();
+	}
 	rulebookMatched(id) {
 		_debug('rulebook <q><<toString(id)>></q> matched', 'rulebook');
+		ruleEngineDebugger.fireRuleSystem();
 		inherited(id);
 	}
 ;
