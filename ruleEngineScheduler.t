@@ -151,7 +151,7 @@ class RuleSchedulerThing: Thing, RuleSchedulerBase, RuleSchedulerDaemon
 		ruleSchedulerAction();
 	}
 
-	initialzeThing() {
+	initializeThing() {
 		inherited();
 		initRuleSchedulerDaemon();
 	}
