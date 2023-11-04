@@ -57,7 +57,7 @@ class RuleEngine: RuleEngineObject
 	}
 
 	_tryRuleScheduler(obj) {
-		if((obj == nil) || !obj.ofKind(RuleScheduler))
+		if((obj == nil) || !obj.ofKind(RuleSchedulerBase))
 			return(nil);
 		return(obj.addRuleEngine(self));
 	}

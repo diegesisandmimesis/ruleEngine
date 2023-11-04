@@ -63,6 +63,8 @@ class RuleSchedulerBase: RuleEngineObject
 
 	// Method called in the beforeAction() window.
 	ruleSchedulerBeforeAction() {
+		if(gAction.ofKind(SystemAction))
+			return;
 		_ruleEngineList.forEach(function(o) {
 			o.ruleEngineBeforeAction();
 		});
@@ -70,6 +72,8 @@ class RuleSchedulerBase: RuleEngineObject
 
 	// Method called in the afterAction() window.
 	ruleSchedulerAfterAction() {
+		if(gAction.ofKind(SystemAction))
+			return;
 		_ruleEngineList.forEach(function(o) {
 			o.ruleEngineAfterAction();
 		});
@@ -77,6 +81,8 @@ class RuleSchedulerBase: RuleEngineObject
 
 	// Method called after action resolution.
 	ruleSchedulerAction() {
+		if(gAction.ofKind(SystemAction))
+			return;
 		_ruleEngineList.forEach(function(o) {
 			o.ruleEngineAction();
 		});
