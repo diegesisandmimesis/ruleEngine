@@ -23,11 +23,56 @@
 
 #include "ruleEngine.h"
 
-class RuleSchedulerBase: RuleEngineObject
+class RuleScheduler: RuleEngineObject, PreinitObject
 	syslogID = 'RuleScheduler'
 
 	// A list of all the rule engines we're managing.
 	_ruleEngineList = perInstance(new Vector())
+
+	// Out daemon instance, if any.
+	_ruleSchedulerDaemon = nil
+
+	// Create a once-per turn daemon.
+	initRuleSchedulerDaemon() {
+		_ruleSchedulerDaemon = new Daemon(self,
+			&updateRuleScheduler, 1);
+	}
+
+	// Called at preinit.
+	execute() {
+		// Rooms don't need daemons and Things don't start theirs here.
+		if(ofKind(Room) || ofKind(Thing))
+			return;
+
+		// Set up the daemon.
+		initRuleSchedulerDaemon();
+
+		// Subscribe to before/after notifications.
+		gSubscribeBeforeAfter(self);
+	}
+
+	initializeThing() {
+		inherited();
+		if(ofKind(Room))
+			return;
+		initRuleSchedulerDaemon();
+	}
+
+	// For Rooms.
+	roomBeforeAction() { inherited(); ruleSchedulerBeforeAction(); }
+	roomAfterAction() { inherited(); ruleSchedulerAfterAction(); }
+	roomDaemon() { inherited(); ruleSchedulerAction(); }
+
+	// For Things.
+	beforeAction() { inherited(); ruleSchedulerBeforeAction(); }
+	afterAction() { inherited(); ruleSchedulerAfterAction(); }
+
+	// For global schedulers.
+	globalBeforeAction() { ruleSchedulerBeforeAction(); }
+	globalAfterAction() { ruleSchedulerAfterAction(); }
+
+	// For Things and global schedulers.
+	updateRuleScheduler() { inherited(); ruleSchedulerAction(); }
 
 	// Add a rule engine.
 	addRuleEngine(obj) {
@@ -86,74 +131,6 @@ class RuleSchedulerBase: RuleEngineObject
 		_ruleEngineList.forEach(function(o) {
 			o.ruleEngineAction();
 		});
-	}
-;
-
-// Mixin class for schedulers that need a daemon.
-class RuleSchedulerDaemon: RuleEngineObject
-	_ruleSchedulerDaemon = nil
-
-	initRuleSchedulerDaemon() {
-		_ruleSchedulerDaemon = new Daemon(self,
-			&updateRuleScheduler, 1);
-	}
-
-	updateRuleScheduler() {}
-;
-
-// Scheduler that has global scope.
-class RuleScheduler: RuleSchedulerBase, RuleSchedulerDaemon, BeforeAfterThing, PreinitObject
-	// Called at preinit.
-	execute() { initRuleSchedulerDaemon(); }
-
-	// Called every turn in the beforeAction() window.
-	globalBeforeAction() { ruleSchedulerBeforeAction(); }
-
-	// Called every turn in the afterAction() window.
-	globalAfterAction() { ruleSchedulerAfterAction(); }
-
-	// Called every turn by our daemon, after action resolution.
-	updateRuleScheduler() { ruleSchedulerAction(); }
-;
-
-// Scheduler for a single room scope.
-class RuleSchedulerRoom: Room, RuleSchedulerBase
-	roomBeforeAction() {
-		inherited();
-		ruleSchedulerBeforeAction();
-	}
-
-	roomAfterAction() {
-		inherited();
-		ruleSchedulerAfterAction();
-	}
-
-	roomDaemon() {
-		inherited();
-		ruleSchedulerAction();
-	}
-;
-
-// Scheduler for the scope of an in-game object.
-class RuleSchedulerThing: Thing, RuleSchedulerBase, RuleSchedulerDaemon
-	beforeAction() {
-		inherited();
-		ruleSchedulerBeforeAction();
-	}
-
-	afterAction() {
-		inherited();
-		ruleSchedulerAfterAction();
-	}
-
-	updateRuleScheduler() {
-		inherited();
-		ruleSchedulerAction();
-	}
-
-	initializeThing() {
-		inherited();
-		initRuleSchedulerDaemon();
 	}
 ;
 
