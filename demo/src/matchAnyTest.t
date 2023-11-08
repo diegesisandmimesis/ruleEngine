@@ -61,7 +61,6 @@ startRoom: Room 'Void' "This is a featureless void. ";
 +me: Person;
 
 // Declare a RuleEngine instance.
-//RuleEngine ruleScheduler = gRuleScheduler;
 RuleEngine;
 +RuleSystem;
 // Anonymous rulebook that matches when any of its rules match.

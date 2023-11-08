@@ -23,6 +23,7 @@
 #error "beforeAfter should be in /home/user/tads/beforeAfter ."
 #endif // BEFORE_AFTER_H
 
+/*
 #include "senseGrep.h"
 #ifndef SENSE_GREP_H
 #error "This module requires the senseGrep module."
@@ -31,6 +32,18 @@
 #error "ruleEngine is in /home/user/tads/ruleEngine, then"
 #error "senseGrep should be in /home/user/tads/senseGrep ."
 #endif // SENSE_GREP_H
+*/
+
+#ifdef __DEBUG
+#include "linter.h"
+#ifndef LINTER_H
+#error "This module requires the linter module."
+#error "https://github.com/diegesisandmimesis/linter"
+#error "It should be in the same parent directory as this module.  So if"
+#error "ruleEngine is in /home/user/tads/ruleEngine, then"
+#error "linter should be in /home/user/tads/linter ."
+#endif // LINTER_H
+#endif // __DEBUG
 
 #ifndef gActionIsNested
 #define gActionIsNested (gAction.parentAction != nil)
@@ -40,5 +53,7 @@ Rulebook template 'id'? +priority?;
 Rule template 'id'?;
 
 #define gRuleScheduler globalRuleScheduler
+
+#define gDefaultRulebookID 'default'
 
 #define RULE_ENGINE_H

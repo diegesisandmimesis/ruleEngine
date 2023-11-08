@@ -36,7 +36,7 @@ class RuleSystem: RuleEngineObject
 
 		// If the rulebook has no ID defined, create one for it.
 		if(obj.id == nil)
-			obj.id = (_rulebookIdx += 1);
+			obj.id = 'rulebook <<toString(_rulebookIdx += 1)>>';
 
 		// Add it to our rulebook table.
 		rulebook[obj.id] = obj;
@@ -118,7 +118,7 @@ class RuleSystem: RuleEngineObject
 	}
 
 	// Returns the given rulebook.
-	getRulebook(id?) { return(rulebook[(id ? id : 'default')]); }
+	getRulebook(id?) { return(rulebook[(id ? id : gDefaultRulebookID)]); }
 
 	// Creates a new rulebook.  In practice this is probably never used
 	// for anything other than creating a default rulebook if one isn't
@@ -130,7 +130,7 @@ class RuleSystem: RuleEngineObject
 		r = rulebookClass.createInstance();
 
 		// Make sure it has an ID.
-		r.id = (id ? id : 'default');
+		r.id = (id ? id : gDefaultRulebookID);
 
 		// Make us the owner.
 		r.ruleSystem = self;
@@ -263,7 +263,7 @@ class RuleSystem: RuleEngineObject
 
 	// Returns boolean true if the given rulebook matched this turn.
 	checkRulebookMatch(id?) {
-		return(rulebookMatches[(id ? id : 'default')]
+		return(rulebookMatches[(id ? id : gDefaultRulebookID)]
 			== libGlobal.totalTurns);
 	}
 

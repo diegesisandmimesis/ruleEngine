@@ -176,6 +176,10 @@ class Rulebook: RuleEngineObject
 			return;
 		_error('orphaned rulebook');
 	}
+
+	validateRulebook() {
+		return((ruleSystem != nil) && ruleSystem.ofKind(RuleSystem));
+	}
 ;
 
 // A rulebook whose default state is nil, and becomes true if ANY of

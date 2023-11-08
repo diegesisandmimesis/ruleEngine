@@ -62,19 +62,17 @@ gameMain: GameMainDef
 startRoom: Room 'Void' "This is a featureless void. ";
 +me: Person;
 
-// Declare a RuleEngine instance.
 RuleEngine;
-
 // Declare a RuleUser instance.
 // Normally this would be a mixin for something else (like a Scene),
 // but here we're just testing the rulebook checking logic, so
 // we use an anonymous object that's "just" a RuleUser instance.
-RuleUser
++RuleSystem
 	rulebookMatchAction(id) {
 		"<.p>All the rules matched on turn number
 		<<toString(libGlobal.totalTurns)>>.<.p> ";
 	}
 ;
-+Rulebook;
-++Rule matchRule(data?) { return(libGlobal.totalTurns > 2); };
-++Rule matchRule(data?) { return((libGlobal.totalTurns % 2) != 0); };
+++Rulebook;
++++Rule matchRule(data?) { return(libGlobal.totalTurns > 2); };
++++Rule matchRule(data?) { return((libGlobal.totalTurns % 2) != 0); };

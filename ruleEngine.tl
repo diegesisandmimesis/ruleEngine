@@ -9,4 +9,5 @@ source: ruleEngineRuleSystem.t
 source: ruleEngineTuple.t
 source: ruleEngineTrigger.t
 source: ruleEnginePreinit.t
+source: ruleEngineLinter.t
 source: ruleEngineDebug.t

@@ -75,4 +75,4 @@ RuleEngine;
 	}
 ;
 +++Rule matchRule(data?) { return(libGlobal.totalTurns > 2); };
-+Rule matchRule(data?) { return((libGlobal.totalTurns % 2) != 0); };
++++Rule matchRule(data?) { return((libGlobal.totalTurns % 2) != 0); };
