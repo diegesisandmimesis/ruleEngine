@@ -25,6 +25,8 @@ class RuleEngine: RuleEngineObject
 
 		_ruleSystemList.append(obj);
 
+		obj.ruleEngine = self;
+
 		return(true);
 	}
 
