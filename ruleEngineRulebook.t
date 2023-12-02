@@ -59,16 +59,18 @@ class Rulebook: RuleEngineObject
 	// Adds a rule.
 	addRule(obj) {
 		// Make sure the arg is a rule.
-		if((obj == nil) || !obj.ofKind(Rule))
+		if((obj == nil) || !obj.ofKind(Rule)) {
 			return(nil);
+		}
 
 		// Create a new vector for our rules if we don't have one.
 		if(ruleList == nil)
 			ruleList = new Vector();
 
 		// Avoid adding a duplicate rule.
-		if(ruleList.indexOf(obj) != nil)
+		if(ruleList.indexOf(obj) != nil) {
 			return(nil);
+		}
 
 		// Actually add the rule.
 		ruleList.append(obj);

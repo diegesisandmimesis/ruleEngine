@@ -156,6 +156,7 @@ modify Rulebook
 			_debug('addRule() success', 'rule');
 		else
 			_debug('addRule() failed', 'rule');
+		return(r);
 	}
 ;
 
