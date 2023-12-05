@@ -300,15 +300,31 @@ class RuleSystem: RuleEngineObject
 		return(true);
 	}
 
+/*
 	_updateRulebooks(type?) {
 		rulebook.forEachAssoc(function(key, val) {
 			if(val.tryCheck(type) == true)
-				val.tryCallback();
+				val.tryCallback(type);
 		});
 	}
 
 	_rulebookBeforeAction() { _updateRulebooks(eRuleBeforeAction); }
 	_rulebookAfterAction() { _updateRulebooks(eRuleAfterAction); }
+*/
+	_rulebookBeforeAction() {
+		rulebook.forEachAssoc(function(key, val) {
+			if(val.tryBeforeActionCheck() == true) {
+				val.tryCallback();
+			}
+		});
+	}
+	_rulebookAfterAction() {
+		rulebook.forEachAssoc(function(key, val) {
+			if(val.tryAfterActionCheck() == true) {
+				val.tryCallback();
+			}
+		});
+	}
 
 	ruleSystemBeforeAction() {
 		_rulebookBeforeAction();

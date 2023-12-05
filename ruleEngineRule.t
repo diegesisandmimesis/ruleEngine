@@ -128,3 +128,6 @@ class Rule: RuleEngineObject
 		return(getState());
 	}
 ;
+
+class BeforeActionRule: Rule;
+class AfterActionRule: Rule;

@@ -9,7 +9,7 @@
 
 #include "ruleEngine.h"
 
-class Trigger: Rule, Tuple
+class Trigger: BeforeActionRule, Tuple
 	getTurnConfig(data?) {
 		if(data == nil) data = object {};
 		if(data.srcActor == nil)

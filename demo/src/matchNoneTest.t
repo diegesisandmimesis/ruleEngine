@@ -71,7 +71,8 @@ startRoom: Room 'Void' "This is a featureless void. ";
 // each instance.
 class DemoRulebook: RulebookMatchNone
 	callback() {
-		"<.p>All the rules in rulebook <q><<id>></q> matched on turn
+		"<.p>One or more of the rules in rulebook <q><<id>></q>
+		matched on turn
 		<<toString(libGlobal.totalTurns)>>.<.p> ";
 	}
 ;

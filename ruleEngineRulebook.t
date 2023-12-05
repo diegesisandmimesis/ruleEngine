@@ -33,8 +33,19 @@ class Rulebook: RuleEngineObject
 
 	callbackTimestamp = nil
 
+	rulebookType = nil
+
 	// Property to hold our rules.
 	ruleList = nil
+
+	beforeActionRuleList = nil
+	afterActionRuleList = nil
+
+	_beforeActionFlag = nil
+	_afterActionFlag = nil
+
+	_beforeActionState = nil
+	_afterActionState = nil
 
 	// Flag to indicate rule list has been updated.
 	_ruleListDirty = nil
@@ -58,22 +69,36 @@ class Rulebook: RuleEngineObject
 
 	// Adds a rule.
 	addRule(obj) {
+		local l;
+
 		// Make sure the arg is a rule.
 		if((obj == nil) || !obj.ofKind(Rule)) {
 			return(nil);
 		}
 
+		if(obj.ofKind(BeforeActionRule)) {
+			if(beforeActionRuleList == nil)
+				beforeActionRuleList = new Vector();
+			l = beforeActionRuleList;
+		} else {
+			if(afterActionRuleList == nil)
+				afterActionRuleList = new Vector();
+			l = afterActionRuleList;
+		}
+
+/*
 		// Create a new vector for our rules if we don't have one.
 		if(ruleList == nil)
 			ruleList = new Vector();
+*/
 
 		// Avoid adding a duplicate rule.
-		if(ruleList.indexOf(obj) != nil) {
+		if(l.indexOf(obj) != nil) {
 			return(nil);
 		}
 
 		// Actually add the rule.
-		ruleList.append(obj);
+		l.append(obj);
 
 		obj.rulebook = self;
 
@@ -85,12 +110,19 @@ class Rulebook: RuleEngineObject
 
 	// Remove the given rule from our list.
 	removeRule(obj) {
+		local l;
+
+		if(obj.ofKind(AfterActionRule))
+			l = afterActionRuleList;
+		else
+			l = beforeActionRuleList;
+
 		// Make sure the rule is on the list.
-		if(ruleList.indexOf(obj) == nil)
+		if(l.indexOf(obj) == nil)
 			return(nil);
 
 		// Remove the rule.
-		ruleList.removeElement(obj);
+		l.removeElement(obj);
 
 		// Make the rule list as updated.
 		_ruleListDirty = true;
@@ -99,19 +131,96 @@ class Rulebook: RuleEngineObject
 	}
 
 	tryCheck(type?) {
-		if(type == eRuleBeforeAction)
+		switch(type) {
+			case eRuleBeforeAction:
+				return(tryBeforeActionCheck() == defaultState);
+			case eRuleAfterAction:
+				return(tryAfterActionCheck() == defaultState);
+			default:
+				return(nil);
+		}
+	}
+
+	_resetStates() {
+		_beforeActionFlag = nil;
+		_afterActionFlag = nil;
+		_beforeActionState = defaultState;
+		_afterActionState = defaultState;
+	}
+
+	tryBeforeActionCheck() {
+		_resetStates();
+		_beforeActionState = runBeforeActionCheck();
+
+		if(afterActionRuleList == nil) {
+			return(_beforeActionState);
+		}
+
+		return(nil);
+	}
+
+	tryAfterActionCheck() {
+		_afterActionState = runAfterActionCheck();
+		if(beforeActionRuleList == nil) {
+			return(_afterActionState);
+		}
+
+		return(_afterActionState && _beforeActionState);
+	}
+/*
+	tryCheck(type?) {
+		if(type == eRuleBeforeAction) {
 			return(runCheck(Trigger) != defaultState);
+		}
 
 		return(check());
 	}
+*/
 
+	runBeforeActionCheck() {
+		local i;
+
+		_beforeActionFlag = true;
+
+		if(beforeActionRuleList == nil)
+			return(defaultState);
+
+		for(i = 1; i <= beforeActionRuleList.length; i++) {
+			if(beforeActionRuleList[i].check(Rule) != true)
+				return(defaultState);
+		}
+
+		return(!defaultState);
+	}
+
+	runAfterActionCheck() {
+		local i;
+
+		_afterActionFlag = true;
+
+		if(afterActionRuleList == nil)
+			return(defaultState);
+
+		for(i = 1; i <= afterActionRuleList.length; i++) {
+			if(afterActionRuleList[i].check(Rule) != true)
+				return(defaultState);
+		}
+
+		return(!defaultState);
+	}
+
+	isCheckNeeded(val) {
+		return((gActionIsNested == true)
+			|| (val != libGlobal.totalTurns));
+	}
+
+/*
 	// Method called by RuleSystem.
 	// Returns the current state, computing it if it hasn't been
 	// already computed this turn.
 	check() {
 		// Check to see if we need to compute the state.
-		if((gActionIsNested == true)
-			|| (timestamp != libGlobal.totalTurns))
+		if(isCheckNeeded(timestamp))
 			setState(runCheck());
 
 		// Return the saved state.
@@ -137,11 +246,11 @@ class Rulebook: RuleEngineObject
 		// our default.
 		return(!defaultState);
 	}
+*/
 
 	// By default, we only run the callback once per turn.
-	tryCallback() {
-		if((gActionIsNested != true)
-			&& (callbackTimestamp == libGlobal.totalTurns))
+	tryCallback(type?) {
+		if(!isCheckNeeded(callbackTimestamp))
 			return;
 			
 		if(gActionIsNested == true)
@@ -153,7 +262,7 @@ class Rulebook: RuleEngineObject
 	}
 
 	// By default, the callback notifies the rulebook's ruleSystem.
-	callback() {
+	callback(type?) {
 		if(ruleSystem == nil)
 			return;
 		ruleSystem.rulebookMatchCallback(self.id);
@@ -189,6 +298,7 @@ class Rulebook: RuleEngineObject
 class RulebookMatchAny: Rulebook
 	defaultState = nil
 
+/*
 	runCheck(type?) {
 		local i;
 
@@ -202,6 +312,45 @@ class RulebookMatchAny: Rulebook
 				return(!defaultState);
 
 		// None of the rules matched, return the default state.
+		return(defaultState);
+	}
+*/
+
+	runBeforeActionCheck() {
+		local i;
+
+		if(_beforeActionFlag)
+			return(_beforeActionState);
+
+		_beforeActionFlag = true;
+
+		if(beforeActionRuleList == nil)
+			return(defaultState);
+
+		for(i = 1; i <= beforeActionRuleList.length; i++) {
+			if(beforeActionRuleList[i].check(Rule) == true)
+				return(!defaultState);
+		}
+
+		return(defaultState);
+	}
+
+	runAfterActionCheck() {
+		local i;
+
+		if(_afterActionFlag)
+			return(_afterActionState);
+
+		_afterActionFlag = true;
+
+		if(afterActionRuleList == nil)
+			return(defaultState);
+
+		for(i = 1; i <= afterActionRuleList.length; i++) {
+			if(afterActionRuleList[i].check(Rule) == true)
+				return(!defaultState);
+		}
+
 		return(defaultState);
 	}
 ;
