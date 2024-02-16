@@ -8,6 +8,7 @@
 
 #include "ruleEngine.h"
 
+#ifdef LINTER
 #ifdef __DEBUG
 
 ruleEngineLinter: Linter;
@@ -58,3 +59,4 @@ ruleEngineLinter: Linter;
 ;
 
 #endif // __DEBUG
+#endif // LINTER

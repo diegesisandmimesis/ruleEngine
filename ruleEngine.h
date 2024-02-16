@@ -34,6 +34,7 @@
 #endif // SENSE_GREP_H
 */
 
+#ifdef LINTER
 #ifdef __DEBUG
 #include "linter.h"
 #ifndef LINTER_H
@@ -44,6 +45,7 @@
 #error "linter should be in /home/user/tads/linter ."
 #endif // LINTER_H
 #endif // __DEBUG
+#endif // LINTER
 
 #ifndef gActionIsNested
 #define gActionIsNested (gAction.parentAction != nil)
@@ -51,6 +53,8 @@
 
 Rulebook template 'id'? +priority?;
 Rule template 'id'?;
+
+Trigger template @action? ->dstObject?;
 
 #define gRuleScheduler globalRuleScheduler
 
