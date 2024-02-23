@@ -208,7 +208,7 @@ class RuleSystem: RuleEngineObject
 
 		// Note that the rulebook who called us matched this
 		// turn.
-		rulebookMatches[id] = libGlobal.totalTurns;
+		rulebookMatches[id] = gTimestamp;
 	}
 
 	// Called by Rulebook.callback() by default when the rulebook
@@ -263,8 +263,10 @@ class RuleSystem: RuleEngineObject
 
 	// Returns boolean true if the given rulebook matched this turn.
 	checkRulebookMatch(id?) {
-		return(rulebookMatches[(id ? id : gDefaultRulebookID)]
-			== libGlobal.totalTurns);
+		//return(rulebookMatches[(id ? id : gDefaultRulebookID)]
+			//== gTimestamp);
+		return(gCheckTimestamp(rulebookMatches[
+			(id ? id : gDefaultRulebookID)]));
 	}
 
 	enableRuleSystem() {
@@ -292,11 +294,20 @@ class RuleSystem: RuleEngineObject
 	}
 
 	_initializeRuleSystemLocation() {
-		if((location == nil) || !location.ofKind(RuleEngine)) {
-			_error('orphaned rule system');
+		if(_tryRuleEngine(location))
+			return(true);
+		if(_tryRuleEngine(ruleEngine))
+			return(true);
+
+		_error('orphaned rule system');
+
+		return(nil);
+	}
+
+	_tryRuleEngine(obj) {
+		if((obj == nil) || !obj.ofKind(RuleEngine))
 			return(nil);
-		}
-		location.addRuleSystem(self);
+		obj.addRuleSystem(self);
 		return(true);
 	}
 

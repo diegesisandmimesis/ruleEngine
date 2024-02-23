@@ -63,7 +63,7 @@ class Rulebook: RuleEngineObject
 		if(gActionIsNested == true)
 			timestamp = nil;
 		else
-			timestamp = libGlobal.totalTurns;
+			timestamp = gTimestamp;
 		state = ((v == true) ? true : nil);
 	}
 
@@ -211,7 +211,8 @@ class Rulebook: RuleEngineObject
 
 	isCheckNeeded(val) {
 		return((gActionIsNested == true)
-			|| (val != libGlobal.totalTurns));
+			|| !gCheckTimestamp(val));
+			//|| (val != gTimestamp));
 	}
 
 /*
@@ -256,7 +257,7 @@ class Rulebook: RuleEngineObject
 		if(gActionIsNested == true)
 			callbackTimestamp = nil;
 		else
-			callbackTimestamp = libGlobal.totalTurns;
+			callbackTimestamp = gTimestamp;
 
 		callback();
 	}

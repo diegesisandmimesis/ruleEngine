@@ -26,10 +26,15 @@
 class RuleScheduler: RuleEngineObject, PreinitObject
 	syslogID = 'RuleScheduler'
 
+	// Boolean flag.  If true, the scheduler won't run on
+	// turns where the action is a SystemAction.
+	// Default is true.
+	skipSystemActions = true
+
 	// A list of all the rule engines we're managing.
 	_ruleEngineList = perInstance(new Vector())
 
-	// Out daemon instance, if any.
+	// Our daemon instance, if any.
 	_ruleSchedulerDaemon = nil
 
 	// Create a once-per turn daemon.
@@ -106,10 +111,23 @@ class RuleScheduler: RuleEngineObject, PreinitObject
 		return(true);
 	}
 
+	// Returns boolean true if we're configured to skip system actions
+	// and the current gAction is a system action.
+	_skipSystemAction() {
+		return((skipSystemActions == true) && (gAction != nil)
+			&& gAction.ofKind(SystemAction));
+	}
+
+	_skipEventAction() {
+		return(nil);
+		//return((gAction != nil) && gAction.ofKind(EventAction));
+	}
+
 	// Method called in the beforeAction() window.
 	ruleSchedulerBeforeAction() {
-		if(gAction.ofKind(SystemAction))
+		if(_skipEventAction() || _skipSystemAction())
 			return;
+//aioSay('\nruleSchedulerBeforeAction(): <<toString(gAction)>>\n ');
 		_ruleEngineList.forEach(function(o) {
 			o.ruleEngineBeforeAction();
 		});
@@ -117,8 +135,9 @@ class RuleScheduler: RuleEngineObject, PreinitObject
 
 	// Method called in the afterAction() window.
 	ruleSchedulerAfterAction() {
-		if(gAction.ofKind(SystemAction))
+		if(_skipEventAction() || _skipSystemAction())
 			return;
+//aioSay('\nruleSchedulerAfterAction(): <<toString(gAction)>>\n ');
 		_ruleEngineList.forEach(function(o) {
 			o.ruleEngineAfterAction();
 		});
@@ -126,8 +145,10 @@ class RuleScheduler: RuleEngineObject, PreinitObject
 
 	// Method called after action resolution.
 	ruleSchedulerAction() {
-		if(gAction.ofKind(SystemAction))
+		if(_skipEventAction() || _skipSystemAction())
 			return;
+//aioSay('\nruleSchedulerAction(): <<toString(gAction)>>\n ');
+
 		_ruleEngineList.forEach(function(o) {
 			o.ruleEngineAction();
 		});
@@ -136,3 +157,9 @@ class RuleScheduler: RuleEngineObject, PreinitObject
 
 // We define a global singleton to handle "default global" rule engines.
 globalRuleScheduler: RuleScheduler;
+/*
+	// Utility method for handling a "timestamp" for things that
+	// run once per turn.
+	timestamp() { return(libGlobal.totalTurns); }
+;
+*/

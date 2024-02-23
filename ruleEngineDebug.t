@@ -37,7 +37,7 @@ ruleEngineDebugger: PreinitObject
 
 	execute() { _daemon = new Daemon(self, &update, 1); }
 
-	idx() { return(libGlobal.totalTurns); }
+	idx() { return(gTimestamp.turn); }
 	_add(id, amt?) {
 		local i, obj;
 

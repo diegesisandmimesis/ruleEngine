@@ -14,6 +14,15 @@
 #error "syslog should be in /home/user/tads/syslog ."
 #endif // SYSLOG_H
 
+#include "timestamp.h"
+#ifndef TIMESTAMP_H
+#error "This module requires the timestamp module."
+#error "https://github.com/diegesisandmimesis/timestamp"
+#error "It should be in the same parent directory as this module.  So if"
+#error "ruleEngine is in /home/user/tads/ruleEngine, then"
+#error "timestamp should be in /home/user/tads/timestamp ."
+#endif // TIMESTAMP_H
+
 #include "beforeAfter.h"
 #ifndef BEFORE_AFTER_H
 #error "This module requires the beforeAfter module."
@@ -54,10 +63,12 @@
 Rulebook template 'id'? +priority?;
 Rule template 'id'?;
 
-Trigger template @action? ->dstObject?;
+Trigger template @action? ->srcObject? ->dstObject?;
 
 #define gRuleScheduler globalRuleScheduler
 
 #define gDefaultRulebookID 'default'
+
+//#define gTimestamp (gRuleScheduler.timestamp())
 
 #define RULE_ENGINE_H
