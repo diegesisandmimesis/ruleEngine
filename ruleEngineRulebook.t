@@ -86,12 +86,6 @@ class Rulebook: RuleEngineObject
 			l = afterActionRuleList;
 		}
 
-/*
-		// Create a new vector for our rules if we don't have one.
-		if(ruleList == nil)
-			ruleList = new Vector();
-*/
-
 		// Avoid adding a duplicate rule.
 		if(l.indexOf(obj) != nil) {
 			return(nil);
@@ -167,15 +161,6 @@ class Rulebook: RuleEngineObject
 
 		return(_afterActionState && _beforeActionState);
 	}
-/*
-	tryCheck(type?) {
-		if(type == eRuleBeforeAction) {
-			return(runCheck(Trigger) != defaultState);
-		}
-
-		return(check());
-	}
-*/
 
 	runBeforeActionCheck() {
 		local i;
@@ -214,40 +199,6 @@ class Rulebook: RuleEngineObject
 			|| !gCheckTimestamp(val));
 			//|| (val != gTimestamp));
 	}
-
-/*
-	// Method called by RuleSystem.
-	// Returns the current state, computing it if it hasn't been
-	// already computed this turn.
-	check() {
-		// Check to see if we need to compute the state.
-		if(isCheckNeeded(timestamp))
-			setState(runCheck());
-
-		// Return the saved state.
-		return(getState());
-	}
-
-	// Actually evaluate the current state (by checking the individual
-	// rules).  Doesn't store the value.
-	runCheck(type?) {
-		local i;
-
-		// Make sure we have rules to check.
-		if(ruleList == nil)
-			return(defaultState);
-
-		// Go through the rules, returning immediately if
-		// any of them aren't matches.
-		for(i = 1; i <= ruleList.length; i++)
-			if(ruleList[i].check(type) != true)
-				return(defaultState);
-
-		// All the rules matches, so we return the negation of
-		// our default.
-		return(!defaultState);
-	}
-*/
 
 	// By default, we only run the callback once per turn.
 	tryCallback(type?) {
@@ -298,24 +249,6 @@ class Rulebook: RuleEngineObject
 // its rules match (their check() method returns true).
 class RulebookMatchAny: Rulebook
 	defaultState = nil
-
-/*
-	runCheck(type?) {
-		local i;
-
-		if(ruleList == nil)
-			return(defaultState);
-
-		// Go through the rule list and if any rules match,
-		// return the negation of the default state.
-		for(i = 1; i <= ruleList.length; i++)
-			if(ruleList[i].check(type) == true)
-				return(!defaultState);
-
-		// None of the rules matched, return the default state.
-		return(defaultState);
-	}
-*/
 
 	runBeforeActionCheck() {
 		local i;

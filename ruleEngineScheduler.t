@@ -119,15 +119,14 @@ class RuleScheduler: RuleEngineObject, PreinitObject
 	}
 
 	_skipEventAction() {
-		return(nil);
 		//return((gAction != nil) && gAction.ofKind(EventAction));
+		return(nil);
 	}
 
 	// Method called in the beforeAction() window.
 	ruleSchedulerBeforeAction() {
 		if(_skipEventAction() || _skipSystemAction())
 			return;
-//aioSay('\nruleSchedulerBeforeAction(): <<toString(gAction)>>\n ');
 		_ruleEngineList.forEach(function(o) {
 			o.ruleEngineBeforeAction();
 		});
@@ -137,7 +136,6 @@ class RuleScheduler: RuleEngineObject, PreinitObject
 	ruleSchedulerAfterAction() {
 		if(_skipEventAction() || _skipSystemAction())
 			return;
-//aioSay('\nruleSchedulerAfterAction(): <<toString(gAction)>>\n ');
 		_ruleEngineList.forEach(function(o) {
 			o.ruleEngineAfterAction();
 		});
@@ -147,7 +145,6 @@ class RuleScheduler: RuleEngineObject, PreinitObject
 	ruleSchedulerAction() {
 		if(_skipEventAction() || _skipSystemAction())
 			return;
-//aioSay('\nruleSchedulerAction(): <<toString(gAction)>>\n ');
 
 		_ruleEngineList.forEach(function(o) {
 			o.ruleEngineAction();
@@ -157,9 +154,3 @@ class RuleScheduler: RuleEngineObject, PreinitObject
 
 // We define a global singleton to handle "default global" rule engines.
 globalRuleScheduler: RuleScheduler;
-/*
-	// Utility method for handling a "timestamp" for things that
-	// run once per turn.
-	timestamp() { return(libGlobal.totalTurns); }
-;
-*/
