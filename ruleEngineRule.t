@@ -98,7 +98,6 @@ class Rule: RuleEngineObject
 			timestamp = nil;
 		else
 			timestamp = gTimestamp;
-			//timestamp = libGlobal.totalTurns;
 
 		// If the rule state wouldn't change, bail.
 		if(state == v)
@@ -122,10 +121,8 @@ class Rule: RuleEngineObject
 		// Check the timestamp, and re-check our condition(s)
 		// if they haven't been checked this turn.
 		if((gActionIsNested == true)
-			|| !gCheckTimestamp(timestamp)) {
-			//|| (timestamp != gTimestamp)) {
+			|| !gCheckTimestamp(timestamp))
 			setState(matchRule());
-		}
 
 		return(getState());
 	}

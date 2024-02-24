@@ -263,8 +263,6 @@ class RuleSystem: RuleEngineObject
 
 	// Returns boolean true if the given rulebook matched this turn.
 	checkRulebookMatch(id?) {
-		//return(rulebookMatches[(id ? id : gDefaultRulebookID)]
-			//== gTimestamp);
 		return(gCheckTimestamp(rulebookMatches[
 			(id ? id : gDefaultRulebookID)]));
 	}

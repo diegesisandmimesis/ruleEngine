@@ -197,7 +197,6 @@ class Rulebook: RuleEngineObject
 	isCheckNeeded(val) {
 		return((gActionIsNested == true)
 			|| !gCheckTimestamp(val));
-			//|| (val != gTimestamp));
 	}
 
 	// By default, we only run the callback once per turn.
