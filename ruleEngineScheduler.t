@@ -29,7 +29,8 @@ class RuleScheduler: RuleEngineObject, PreinitObject
 	// Boolean flag.  If true, the scheduler won't run on
 	// turns where the action is a SystemAction.
 	// Default is true.
-	skipSystemActions = true
+	//skipSystemActions = true
+	skipSystemActions = nil
 
 	// A list of all the rule engines we're managing.
 	_ruleEngineList = perInstance(new Vector())

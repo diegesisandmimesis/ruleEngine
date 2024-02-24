@@ -24,6 +24,9 @@ class RuleSystem: RuleEngineObject
 	// Class to use for rulebook instances.
 	rulebookClass = Rulebook
 
+	// Should we ignore system actions?
+	ignoreSystemActions = true
+
 	// Arbitrary index for rulebooks.  Used to create a rulebook ID
 	// if one isn't declared in the rulebook definition.
 	_rulebookIdx = 0
@@ -324,17 +327,28 @@ class RuleSystem: RuleEngineObject
 		});
 	}
 
+	skipSystemAction() {
+		return((ignoreSystemActions == true) && (gAction != nil)
+			&& gAction.ofKind(SystemAction));
+	}
+
 	ruleSystemBeforeAction() {
+		if(skipSystemAction())
+			return;
 		_rulebookBeforeAction();
 		tryBeforeAction();
 	}
 
 	ruleSystemAfterAction() {
+		if(skipSystemAction())
+			return;
 		_rulebookAfterAction();
 		tryAfterAction();
 	}
 
 	ruleSystemAction() {
+		if(skipSystemAction())
+			return;
 		tryAction();
 	}
 
